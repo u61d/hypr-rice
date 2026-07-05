@@ -1,0 +1,5 @@
+pw.txt
+*.bak
+*.bak.*
+.cache/
+.DS_Store
