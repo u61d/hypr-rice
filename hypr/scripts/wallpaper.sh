@@ -26,4 +26,4 @@ swww img "$WALLPAPER" \
     --transition-pos 0.5,0.5 \
     --transition-duration 1.2 \
     --transition-fps 60 \
-    --transition-bezier 0.16,1,0.3,1
+    --transition-step 90

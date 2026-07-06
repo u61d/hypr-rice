@@ -37,7 +37,7 @@ green="$(color primary_fixed '#a6e3a1')"
 yellow="$(color tertiary_fixed '#f9e2af')"
 red="$(color error '#f38ba8')"
 
-mkdir -p "$HOME/.config/hypr" "$HOME/.config/quickshell/hypr-rice"
+mkdir -p "$HOME/.config/hypr" "$HOME/.config/quickshell/hypr-rice" "$HOME/.config/kitty"
 
 cat > "$HOME/.config/hypr/colors.lua" <<EOF
 return {
@@ -74,6 +74,46 @@ QtObject {
     readonly property color red: "$red"
 }
 EOF
+
+cat > "$HOME/.config/hypr/hyprlock-colors.conf" <<EOF
+\$base = rgba(${base##}ff)
+\$mantle = rgba(${mantle##}ff)
+\$surface = rgba(${surface##}ff)
+\$text = rgba(${text##}ff)
+\$primary = rgba(${primary##}ff)
+\$primary_alpha = rgba(${primary##}cc)
+EOF
+
+
+cat > "$HOME/.config/kitty/colors.conf" <<EOF
+foreground              $text
+background              $base
+selection_foreground    $base
+selection_background    $tertiary
+cursor                  $tertiary
+cursor_text_color       $base
+
+color0  $surface_high
+color8  $muted
+color1  $red
+color9  $red
+color2  $green
+color10 $green
+color3  $yellow
+color11 $yellow
+color4  $secondary
+color12 $secondary
+color5  $primary
+color13 $primary
+color6  #94e2d5
+color14 #94e2d5
+color7  #bac2de
+color15 #a6adc8
+
+active_border_color   $primary
+inactive_border_color $surface_high
+EOF
+
 
 if [[ "${HYPR_RICE_NO_RELOAD:-0}" != "1" ]]; then
     hyprctl reload >/dev/null 2>&1 || true

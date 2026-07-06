@@ -27,32 +27,33 @@ end
 
 local terminal = "kitty"
 local file_manager = "nautilus"
-local menu = "rofi -show drun -theme ~/.config/rofi/config.rasi"
+local menu = "quickshell ipc call hypr-rice toggleDashboard"
 local quickshell = "quickshell --config hypr-rice --no-duplicate"
 
 hl.monitor({
     output = "",
     mode = "preferred",
     position = "auto",
-    scale = 1,
+    scale = "auto",
 })
 
 hl.on("hyprland.start", function()
     hl.exec_cmd("swww-daemon")
     hl.exec_cmd("~/.config/hypr/scripts/wallpaper.sh")
     hl.exec_cmd(quickshell)
-    hl.exec_cmd("swaync")
+    hl.exec_cmd("swww-daemon")
     hl.exec_cmd("hypridle")
     hl.exec_cmd("/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1")
     hl.exec_cmd("wl-paste --watch cliphist store")
-    hl.exec_cmd("hyprctl setcursor Bibata-Modern-Ice 24")
-    hl.exec_cmd("hyprpm reload")
+    hl.exec_cmd("hyprctl setcursor catppuccin-mocha-dark-cursors 24")
+    hl.exec_cmd("swayosd-server")
+    hl.exec_cmd("hyprpm reload -n")
 end)
 
 hl.env("XCURSOR_SIZE", "24")
-hl.env("XCURSOR_THEME", "Bibata-Modern-Ice")
+hl.env("XCURSOR_THEME", "catppuccin-mocha-dark-cursors")
 hl.env("HYPRCURSOR_SIZE", "24")
-hl.env("HYPRCURSOR_THEME", "Bibata-Modern-Ice")
+hl.env("HYPRCURSOR_THEME", "catppuccin-mocha-dark-cursors")
 hl.env("QT_QPA_PLATFORMTHEME", "qt6ct")
 
 hl.config({
@@ -93,7 +94,7 @@ hl.config({
             vibrancy = 0.18,
             new_optimizations = true,
             ignore_opacity = true,
-            xray = false,
+            xray = true,
         },
     },
 
@@ -128,12 +129,36 @@ hl.config({
         enable_swallow = true,
         swallow_regex = "^(kitty)$",
     },
+
+    plugin = {
+        hyprtrails = {
+            color = "rgba(cba6f7ff)",
+        },
+        ["dynamic-cursors"] = {
+            enabled = true,
+            mode = "stretch",
+            threshold = 2,
+            stretch_factor = 1.2,
+        },
+        hyprexpo = {
+            columns = 3,
+            gap_size = 5,
+            bg_col = "rgb(111111)",
+            workspace_method = "center current",
+        }
+    },
 })
 
 hl.gesture({
     fingers = 3,
     direction = "horizontal",
     action = "workspace",
+})
+
+hl.gesture({
+    fingers = 3,
+    direction = "up",
+    action = "togglespecialworkspace",
 })
 
 hl.curve("easeOutExpo", { type = "bezier", points = { { 0.16, 1 }, { 0.3, 1 } } })
@@ -160,9 +185,7 @@ hl.animation({ leaf = "layersIn", enabled = true, speed = 5, bezier = "easeOutBa
 hl.animation({ leaf = "layersOut", enabled = true, speed = 4, bezier = "smoothOut", style = "popin 80%" })
 
 hl.layer_rule({ name = "rofi-blur", match = { namespace = "rofi" }, blur = true, ignore_alpha = 1 })
-hl.layer_rule({ name = "rofi-animate", match = { namespace = "rofi" }, animation = "popin" })
-hl.layer_rule({ name = "notifications-blur", match = { namespace = "notifications" }, blur = true, ignore_alpha = 1 })
-hl.layer_rule({ name = "notifications-animate", match = { namespace = "notifications" }, animation = "popin" })
+
 hl.layer_rule({ name = "quickshell-bar-blur", match = { namespace = "hypr-rice-bar" }, blur = true, ignore_alpha = 0.5 })
 hl.layer_rule({ name = "quickshell-bar-animate", match = { namespace = "hypr-rice-bar" }, animation = "slide" })
 
@@ -184,7 +207,7 @@ hl.bind(mod .. " + F", hl.dsp.window.fullscreen())
 hl.bind(mod .. " + L", hl.dsp.exec_cmd("hyprlock"))
 hl.bind(mod .. " + W", hl.dsp.exec_cmd("~/.config/hypr/scripts/wallpaper.sh"))
 hl.bind(mod .. " + G", hl.dsp.exec_cmd("~/.config/hypr/scripts/gamemode.sh"))
-hl.bind(mod .. " + TAB", hl.dsp.exec_cmd("~/.config/hypr/scripts/overview.sh"))
+hl.bind(mod .. " + TAB", hl.dsp.exec_plugin("hyprexpo:expo", "toggle"))
 
 hl.bind(mod .. " + left", hl.dsp.focus({ direction = "left" }))
 hl.bind(mod .. " + right", hl.dsp.focus({ direction = "right" }))
@@ -205,7 +228,8 @@ hl.bind(mod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 hl.bind("PRINT", hl.dsp.exec_cmd('grim -g "$(slurp)" - | wl-copy'))
 hl.bind(mod .. " + PRINT", hl.dsp.exec_cmd("grim - | wl-copy"))
 
-hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true, repeating = true })
-hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"), { locked = true, repeating = true })
-hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("brightnessctl set 5%+"), { locked = true, repeating = true })
-hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl set 5%-"), { locked = true, repeating = true })
+hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("swayosd-client --output-volume raise"), { locked = true, repeating = true })
+hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("swayosd-client --output-volume lower"), { locked = true, repeating = true })
+hl.bind("XF86AudioMute", hl.dsp.exec_cmd("swayosd-client --output-volume mute-toggle"), { locked = true })
+hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("swayosd-client --brightness raise"), { locked = true, repeating = true })
+hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("swayosd-client --brightness lower"), { locked = true, repeating = true })
