@@ -116,6 +116,13 @@ RowLayout {
                 hoverEnabled: true
                 cursorShape: Qt.PointingHandCursor
                 onClicked: root.hypr.dispatch("workspace " + button.workspaceId)
+                onWheel: (wheel) => {
+                    if (wheel.angleDelta.y > 0) {
+                        root.hypr.dispatch("workspace e-1")
+                    } else if (wheel.angleDelta.y < 0) {
+                        root.hypr.dispatch("workspace e+1")
+                    }
+                }
             }
         }
     }

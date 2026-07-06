@@ -18,6 +18,8 @@ Item {
         spacing: 10
         z: 999
 
+        visible: !globalState.dndEnabled
+
         Repeater {
             model: Notifications.notifications
 

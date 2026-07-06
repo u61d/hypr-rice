@@ -52,6 +52,12 @@ Item {
             font.pixelSize: 20
             font.weight: Font.Bold
         }
+
+        Weather {
+            theme: root.theme
+            Layout.alignment: Qt.AlignHCenter
+            Layout.topMargin: 32
+        }
     }
 
     // === Subtle background Cava visualizer ===

@@ -17,4 +17,10 @@ Text {
         id: clock
         precision: SystemClock.Minutes
     }
+
+    MouseArea {
+        anchors.fill: parent
+        cursorShape: Qt.PointingHandCursor
+        onClicked: quickshell.ipc.call("hypr-rice", "toggleCalendar")
+    }
 }

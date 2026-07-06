@@ -76,16 +76,16 @@ QtObject {
 EOF
 
 cat > "$HOME/.config/hypr/hyprlock-colors.conf" <<EOF
-\$base = rgba(${base##}ff)
-\$mantle = rgba(${mantle##}ff)
-\$surface = rgba(${surface##}ff)
-\$text = rgba(${text##}ff)
-\$primary = rgba(${primary##}ff)
-\$primary_alpha = rgba(${primary##}cc)
+\$base = rgba(${base#\#}ff)
+\$mantle = rgba(${mantle#\#}ff)
+\$surface = rgba(${surface#\#}ff)
+\$text = rgba(${text#\#}ff)
+\$primary = rgba(${primary#\#}ff)
+\$primary_alpha = rgba(${primary#\#}cc)
 EOF
 
 
-cat > "$HOME/.config/kitty/colors.conf" <<EOF
+cat > "$HOME/.config/kitty/kitty-colors.conf" <<EOF
 foreground              $text
 background              $base
 selection_foreground    $base

@@ -13,6 +13,11 @@ ShellRoot {
     QtObject {
         id: globalState
         property bool dashboardVisible: false
+        property bool clipboardVisible: false
+        property bool powerMenuVisible: false
+        property bool notificationCenterVisible: false
+        property bool dndEnabled: false
+        property bool calendarVisible: false
     }
 
     Variants {
@@ -92,6 +97,30 @@ ShellRoot {
 
             DesktopWidget { theme: theme }
         }
+
+        // OSD Overlay (Volume/Brightness)
+        PanelWindow {
+            id: osdWindow
+            required property ShellScreen modelData
+            screen: modelData
+            color: "transparent"
+            anchors.bottom: true
+            anchors.bottomMargin: 100
+            anchors.horizontalCenter: true
+            WlrLayershell.layer: WlrLayer.Overlay
+            WlrLayershell.namespace: "osd"
+            WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
+            mask: null
+            visible: false
+
+            OSD { theme: theme; win: osdWindow }
+        }
+
+        ScreenCapture { theme: theme; modelData: modelData }
+        ClipboardHistory { theme: theme; modelData: modelData }
+        PowerMenu { theme: theme; modelData: modelData }
+        NotificationCenter { theme: theme; modelData: modelData }
+        CalendarPopup { theme: theme; modelData: modelData }
     }
 
     IpcHandler {
@@ -101,6 +130,27 @@ ShellRoot {
         }
         function toggleDashboard() {
             globalState.dashboardVisible = !globalState.dashboardVisible
+        }
+        function toggleClipboard() {
+            globalState.clipboardVisible = !globalState.clipboardVisible
+        }
+        function togglePowerMenu() {
+            globalState.powerMenuVisible = !globalState.powerMenuVisible
+        }
+        function toggleNotificationCenter() {
+            globalState.notificationCenterVisible = !globalState.notificationCenterVisible
+        }
+        function toggleDnd() {
+            globalState.dndEnabled = !globalState.dndEnabled
+        }
+        function toggleCalendar() {
+            globalState.calendarVisible = !globalState.calendarVisible
+        }
+        function showOsd(mode, val) {
+            // Signal the OSD window if it exists
+            if (typeof osdWindow !== "undefined") {
+                osdWindow.children[0].showOsd(mode, parseInt(val))
+            }
         }
     }
 }

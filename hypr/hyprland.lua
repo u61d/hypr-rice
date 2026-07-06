@@ -41,12 +41,10 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("swww-daemon")
     hl.exec_cmd("~/.config/hypr/scripts/wallpaper.sh")
     hl.exec_cmd(quickshell)
-    hl.exec_cmd("swww-daemon")
     hl.exec_cmd("hypridle")
     hl.exec_cmd("/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1")
     hl.exec_cmd("wl-paste --watch cliphist store")
     hl.exec_cmd("hyprctl setcursor catppuccin-mocha-dark-cursors 24")
-    hl.exec_cmd("swayosd-server")
     hl.exec_cmd("hyprpm reload -n")
 end)
 
@@ -129,25 +127,30 @@ hl.config({
         enable_swallow = true,
         swallow_regex = "^(kitty)$",
     },
-
-    plugin = {
-        hyprtrails = {
-            color = "rgba(cba6f7ff)",
-        },
-        ["dynamic-cursors"] = {
-            enabled = true,
-            mode = "stretch",
-            threshold = 2,
-            stretch_factor = 1.2,
-        },
-        hyprexpo = {
-            columns = 3,
-            gap_size = 5,
-            bg_col = "rgb(111111)",
-            workspace_method = "center current",
-        }
-    },
 })
+
+-- Safely apply plugin configuration only if plugins are loaded
+pcall(function()
+    hl.config({
+        plugin = {
+            hyprtrails = {
+                color = "rgba(cba6f7ff)",
+            },
+            ["dynamic-cursors"] = {
+                enabled = true,
+                mode = "stretch",
+                threshold = 2,
+                stretch_factor = 1.2,
+            },
+            hyprexpo = {
+                columns = 3,
+                gap_size = 5,
+                bg_col = "rgb(111111)",
+                workspace_method = "center current",
+            }
+        }
+    })
+end)
 
 hl.gesture({
     fingers = 3,
@@ -200,7 +203,9 @@ hl.bind(mod .. " + Q", hl.dsp.window.close())
 hl.bind(mod .. " + SHIFT + Q", hl.dsp.exit())
 hl.bind(mod .. " + E", hl.dsp.exec_cmd(file_manager))
 hl.bind(mod .. " + SPACE", hl.dsp.exec_cmd(menu))
-hl.bind(mod .. " + V", hl.dsp.window.float({ action = "toggle" }))
+hl.bind(mod .. " + SHIFT + V", hl.dsp.window.float({ action = "toggle" }))
+hl.bind(mod .. " + V", hl.dsp.exec_cmd("quickshell ipc call hypr-rice toggleClipboard"))
+hl.bind(mod .. " + N", hl.dsp.exec_cmd("quickshell ipc call hypr-rice toggleNotificationCenter"))
 hl.bind(mod .. " + P", hl.dsp.window.pseudo())
 hl.bind(mod .. " + J", hl.dsp.layout("togglesplit"))
 hl.bind(mod .. " + F", hl.dsp.window.fullscreen())
@@ -225,11 +230,13 @@ hl.bind(mod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:magic" 
 hl.bind(mod .. " + mouse:272", hl.dsp.window.drag(), { mouse = true })
 hl.bind(mod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
-hl.bind("PRINT", hl.dsp.exec_cmd('grim -g "$(slurp)" - | wl-copy'))
-hl.bind(mod .. " + PRINT", hl.dsp.exec_cmd("grim - | wl-copy"))
+hl.bind("PRINT", hl.dsp.exec_cmd("~/.config/hypr/scripts/screenshot.sh area"))
+hl.bind(mod .. " + PRINT", hl.dsp.exec_cmd("~/.config/hypr/scripts/screenshot.sh full"))
+hl.bind(mod .. " + Shift + R", hl.dsp.exec_cmd("~/.config/hypr/scripts/screenrecord.sh"))
+hl.bind(mod .. " + Shift + C", hl.dsp.exec_cmd("~/.config/hypr/scripts/colorpicker.sh"))
 
-hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("swayosd-client --output-volume raise"), { locked = true, repeating = true })
-hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("swayosd-client --output-volume lower"), { locked = true, repeating = true })
-hl.bind("XF86AudioMute", hl.dsp.exec_cmd("swayosd-client --output-volume mute-toggle"), { locked = true })
-hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("swayosd-client --brightness raise"), { locked = true, repeating = true })
-hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("swayosd-client --brightness lower"), { locked = true, repeating = true })
+hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("~/.config/hypr/scripts/volume.sh up"), { locked = true, repeating = true })
+hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("~/.config/hypr/scripts/volume.sh down"), { locked = true, repeating = true })
+hl.bind("XF86AudioMute", hl.dsp.exec_cmd("~/.config/hypr/scripts/volume.sh mute"), { locked = true })
+hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("~/.config/hypr/scripts/brightness.sh up"), { locked = true, repeating = true })
+hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("~/.config/hypr/scripts/brightness.sh down"), { locked = true, repeating = true })

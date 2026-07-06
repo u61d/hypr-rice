@@ -13,9 +13,10 @@ Quickshell bar built from scratch, and wallpaper-driven colors via matugen.
 | `hypr/scripts/wallpaper.sh` | Picks a random wallpaper, generates theme colors with matugen, and animates the transition via `swww` |
 | `hypr/scripts/gamemode.sh` | `Super+G` toggle that disables costly blur/shadow/gaps/animations for games |
 | `hypr/scripts/overview.sh` | `Super+Tab` overview dispatcher wrapper for Hyprspace / hyprexpo-style plugins |
-| `quickshell/hypr-rice/` | Custom Quickshell bar modules: workspaces, active window, Cava, clock, tray, audio, network, CPU, memory, notifications, power |
-| `rofi/config.rasi` | App launcher theme (blurred, rounded, animated via Hyprland layer rules) |
-| `swaync/` | Notification center config + CSS |
+| `quickshell/hypr-rice/` | Custom Quickshell bar modules: workspaces, active window, Cava, clock, tray, audio, network, CPU, memory, battery, MPRIS |
+| `quickshell/hypr-rice/Dashboard.qml` | Full-screen app launcher replacing rofi — search, app grid, now-playing card, CPU/RAM gauges |
+| `quickshell/hypr-rice/NotificationDaemon.qml` | Physics-based notification popups replacing swaync — elastic slide-in, glassmorphism, app icons |
+| `quickshell/hypr-rice/DesktopWidget.qml` | Background desktop clock + greeting + ambient cava visualizer |
 | `kitty/kitty.conf` | Terminal colors + transparency |
 | `cava/config` + `quickshell/hypr-rice/scripts/cava.sh` | Live audio visualizer streamed into the Quickshell center module |
 | `install.sh` | Installs packages and copies configs into `~/.config` (backs up anything existing) |
@@ -45,9 +46,10 @@ Then drop a few wallpapers into `~/Pictures/Wallpapers` before your first login 
   `~/.config/hypr/colors.lua` and `~/.config/quickshell/hypr-rice/Theme.qml`.
 - **Quickshell module animations** — workspace state, hover states, module
   colors, and widths animate inside the bar itself.
-- **Hyprspace overview** — the installer attempts to install the Hyprspace
-  overview plugin via `hyprpm`; `Super+Tab` opens it if the dispatcher is
-  available.
+- **hyprexpo overview** — the installer adds the hyprexpo plugin via `hyprpm`;
+  `Super+Tab` opens it if the dispatcher is available.
+- **hypr-dynamic-cursors** — physics-based cursor animations from
+  [VirtCode/hypr-dynamic-cursors](https://github.com/VirtCode/hypr-dynamic-cursors) (standalone repo, not part of hyprland-plugins).
 - **hyprlock** — the lock screen blurs a live screenshot of your desktop
   rather than showing a flat color.
 
@@ -80,6 +82,8 @@ in the bar.
 ## Notes
 
 Hyprland plugins are native `.so` files loaded into the compositor. This rice
-uses Hyprspace as a best-effort overview plugin because it is currently the
-more reliable overview path than hyprexpo. The fallback wrapper keeps the
-desktop usable even if the plugin fails to build for a specific Hyprland release.
+uses hyprexpo (`sandwichfarm/hyprexpo`) for the overview and hyprtrails
+(`hyprwm/hyprland-plugins`) for cursor trails. `hypr-dynamic-cursors` is a
+standalone plugin from `VirtCode/hypr-dynamic-cursors`. The overview fallback
+wrapper keeps the desktop usable even if a plugin fails to build for a specific
+Hyprland release.
