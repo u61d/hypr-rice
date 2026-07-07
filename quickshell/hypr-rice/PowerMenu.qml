@@ -2,14 +2,17 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
-import Quickshell.Hyprland
+import Quickshell.Wayland
 
 PanelWindow {
     id: root
     required property var theme
     required property ShellScreen modelData
     screen: modelData
-    anchors.fill: parent
+    anchors.top: true
+    anchors.bottom: true
+    anchors.left: true
+    anchors.right: true
 
     color: "transparent"
     WlrLayershell.layer: WlrLayer.Overlay

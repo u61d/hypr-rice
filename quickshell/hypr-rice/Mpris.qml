@@ -65,87 +65,112 @@ Rectangle {
         }
 
         // Expanded mode (hover)
-        RowLayout {
+        ColumnLayout {
             visible: mouse.containsMouse
             Layout.fillWidth: true
-            spacing: 8
+            spacing: 4
 
-            Image {
-                source: activePlayer && activePlayer.trackArtUrl ? activePlayer.trackArtUrl : ""
-                Layout.preferredWidth: 20
-                Layout.preferredHeight: 20
-                fillMode: Image.PreserveAspectCrop
-                visible: source != ""
-                layer.enabled: true
-                layer.effect: ShaderEffect {
-                    fragmentShader: "
-                        varying highp vec2 qt_TexCoord0;
-                        uniform sampler2D source;
-                        uniform lowp float qt_Opacity;
-                        void main() {
-                            vec4 color = texture2D(source, qt_TexCoord0);
-                            vec2 d = qt_TexCoord0 - vec2(0.5, 0.5);
-                            float r = length(d);
-                            if (r > 0.5) discard;
-                            gl_FragColor = color * qt_Opacity;
-                        }
-                    "
-                }
-            }
-
-            Text {
-                text: activePlayer ? (activePlayer.trackTitle || "Unknown") : ""
-                color: root.theme.text
-                font.family: "JetBrainsMono Nerd Font"
-                font.pixelSize: 12
-                font.bold: true
-                elide: Text.ElideRight
+            RowLayout {
                 Layout.fillWidth: true
+                spacing: 8
+
+                Image {
+                    source: activePlayer && activePlayer.trackArtUrl ? activePlayer.trackArtUrl : ""
+                    Layout.preferredWidth: 20
+                    Layout.preferredHeight: 20
+                    fillMode: Image.PreserveAspectCrop
+                    visible: source != ""
+                    layer.enabled: true
+                    layer.effect: ShaderEffect {
+                        fragmentShader: "
+                            varying highp vec2 qt_TexCoord0;
+                            uniform sampler2D source;
+                            uniform lowp float qt_Opacity;
+                            void main() {
+                                vec4 color = texture2D(source, qt_TexCoord0);
+                                vec2 d = qt_TexCoord0 - vec2(0.5, 0.5);
+                                float r = length(d);
+                                if (r > 0.5) discard;
+                                gl_FragColor = color * qt_Opacity;
+                            }
+                        "
+                    }
+                }
+
+                Text {
+                    text: activePlayer ? (activePlayer.trackTitle || "Unknown") : ""
+                    color: root.theme.text
+                    font.family: "JetBrainsMono Nerd Font"
+                    font.pixelSize: 12
+                    font.bold: true
+                    elide: Text.ElideRight
+                    Layout.fillWidth: true
+                }
+
+                MouseArea {
+                    Layout.preferredWidth: 20
+                    Layout.preferredHeight: 20
+                    cursorShape: Qt.PointingHandCursor
+                    Text {
+                        anchors.centerIn: parent
+                        text: "󰒮"
+                        color: parent.containsMouse ? root.theme.primary : root.theme.text
+                        font.family: "JetBrainsMono Nerd Font"
+                        font.pixelSize: 14
+                    }
+                    hoverEnabled: true
+                    onClicked: if(activePlayer) activePlayer.previous()
+                }
+
+                MouseArea {
+                    Layout.preferredWidth: 20
+                    Layout.preferredHeight: 20
+                    cursorShape: Qt.PointingHandCursor
+                    Text {
+                        anchors.centerIn: parent
+                        text: activePlayer && activePlayer.isPlaying ? "󰏤" : "󰐊"
+                        color: parent.containsMouse ? root.theme.primary : root.theme.text
+                        font.family: "JetBrainsMono Nerd Font"
+                        font.pixelSize: 14
+                    }
+                    hoverEnabled: true
+                    onClicked: if(activePlayer) activePlayer.isPlaying ? activePlayer.pause() : activePlayer.play()
+                }
+
+                MouseArea {
+                    Layout.preferredWidth: 20
+                    Layout.preferredHeight: 20
+                    cursorShape: Qt.PointingHandCursor
+                    Text {
+                        anchors.centerIn: parent
+                        text: "󰒭"
+                        color: parent.containsMouse ? root.theme.primary : root.theme.text
+                        font.family: "JetBrainsMono Nerd Font"
+                        font.pixelSize: 14
+                    }
+                    hoverEnabled: true
+                    onClicked: if(activePlayer) activePlayer.next()
+                }
             }
 
-            MouseArea {
-                Layout.preferredWidth: 20
-                Layout.preferredHeight: 20
-                cursorShape: Qt.PointingHandCursor
-                Text {
-                    anchors.centerIn: parent
-                    text: "󰒮"
-                    color: parent.containsMouse ? root.theme.primary : root.theme.text
-                    font.family: "JetBrainsMono Nerd Font"
-                    font.pixelSize: 14
-                }
-                hoverEnabled: true
-                onClicked: if(activePlayer) activePlayer.previous()
-            }
+            Rectangle {
+                visible: activePlayer && activePlayer.length > 0
+                Layout.fillWidth: true
+                Layout.preferredHeight: 3
+                radius: 1.5
+                color: Qt.rgba(root.theme.surfaceHigh.r, root.theme.surfaceHigh.g, root.theme.surfaceHigh.b, 0.6)
 
-            MouseArea {
-                Layout.preferredWidth: 20
-                Layout.preferredHeight: 20
-                cursorShape: Qt.PointingHandCursor
-                Text {
-                    anchors.centerIn: parent
-                    text: activePlayer && activePlayer.isPlaying ? "󰏤" : "󰐊"
-                    color: parent.containsMouse ? root.theme.primary : root.theme.text
-                    font.family: "JetBrainsMono Nerd Font"
-                    font.pixelSize: 14
+                Rectangle {
+                    width: {
+                        if (!activePlayer || !activePlayer.length) return 0
+                        const pos = activePlayer.position || 0
+                        const len = activePlayer.length
+                        return len > 0 ? parent.width * (pos / len) : 0
+                    }
+                    height: parent.height
+                    radius: 1.5
+                    color: root.theme.primary
                 }
-                hoverEnabled: true
-                onClicked: if(activePlayer) activePlayer.isPlaying ? activePlayer.pause() : activePlayer.play()
-            }
-
-            MouseArea {
-                Layout.preferredWidth: 20
-                Layout.preferredHeight: 20
-                cursorShape: Qt.PointingHandCursor
-                Text {
-                    anchors.centerIn: parent
-                    text: "󰒭"
-                    color: parent.containsMouse ? root.theme.primary : root.theme.text
-                    font.family: "JetBrainsMono Nerd Font"
-                    font.pixelSize: 14
-                }
-                hoverEnabled: true
-                onClicked: if(activePlayer) activePlayer.next()
             }
         }
     }

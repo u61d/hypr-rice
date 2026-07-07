@@ -1,20 +1,18 @@
 import QtQuick
 import QtQuick.Layouts
-import QtQuick.Controls
 import Quickshell
+import Quickshell.Wayland
 
 PanelWindow {
     id: root
     required property var theme
     required property ShellScreen modelData
     screen: modelData
-
-    width: 320
-    height: 380
     color: "transparent"
-    anchors.top: parent.top
-    anchors.topMargin: 50
-    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.top: true
+    anchors.bottom: true
+    anchors.left: true
+    anchors.right: true
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.namespace: "calendar"
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
@@ -23,7 +21,18 @@ PanelWindow {
 
     property int currentMonthOffset: 0
 
+    readonly property color cBase: root.theme ? root.theme.base : "#1e1e2e"
+    readonly property color cPrimary: root.theme ? root.theme.primary : "#cba6f7"
+    readonly property color cText: root.theme ? root.theme.text : "#cdd6f4"
+    readonly property color cMuted: root.theme ? root.theme.muted : "#9399b2"
+    readonly property color cSurfaceHigh: root.theme ? root.theme.surfaceHigh : "#45475a"
+
     SystemClock { id: sysClock }
+
+    MouseArea {
+        anchors.fill: parent
+        onClicked: globalState.calendarVisible = false
+    }
 
     function getDaysInMonth(year, month) {
         return new Date(year, month + 1, 0).getDate();
@@ -33,45 +42,68 @@ PanelWindow {
         return new Date(year, month, 1).getDay();
     }
 
+    function buildMonthDays() {
+        const d = new Date()
+        const targetDate = new Date(d.getFullYear(), d.getMonth() + root.currentMonthOffset, 1)
+        const year = targetDate.getFullYear()
+        const month = targetDate.getMonth()
+        const daysInMonth = getDaysInMonth(year, month)
+        const firstDay = getFirstDayOfMonth(year, month)
+        const days = []
+
+        for (let i = 0; i < 42; i++) {
+            const dayNum = i - firstDay + 1
+            if (i < firstDay || dayNum > daysInMonth) {
+                days.push({ dayText: "", isToday: false })
+            } else {
+                const isToday = (root.currentMonthOffset === 0 && dayNum === sysClock.date.getDate())
+                days.push({ dayText: dayNum.toString(), isToday: isToday })
+            }
+        }
+        return days
+    }
+
     Rectangle {
-        anchors.fill: parent
+        width: 320
+        height: 380
+        anchors.top: parent.top
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.topMargin: 50
         radius: 16
-        color: Qt.rgba(theme.base.r, theme.base.g, theme.base.b, 0.95)
+        color: Qt.rgba(root.cBase.r, root.cBase.g, root.cBase.b, 0.95)
         border.width: 1
-        border.color: theme.primary
+        border.color: root.cPrimary
 
         ColumnLayout {
             anchors.fill: parent
             anchors.margins: 16
             spacing: 12
 
-            // Header
             RowLayout {
                 Layout.fillWidth: true
-                
+
                 MouseArea {
                     Layout.preferredWidth: 24
                     Layout.preferredHeight: 24
                     cursorShape: Qt.PointingHandCursor
+                    hoverEnabled: true
                     Text {
                         anchors.centerIn: parent
                         text: ""
-                        color: parent.containsMouse ? root.theme.primary : root.theme.text
+                        color: parent.containsMouse ? root.cPrimary : root.cText
                         font.family: "JetBrainsMono Nerd Font"
                     }
-                    hoverEnabled: true
                     onClicked: root.currentMonthOffset--
                 }
 
                 Text {
-                    id: monthText
                     property var displayedDate: {
-                        let d = new Date()
+                        const d = new Date()
                         d.setMonth(d.getMonth() + root.currentMonthOffset)
                         return d
                     }
                     text: Qt.formatDateTime(displayedDate, "MMMM yyyy")
-                    color: root.theme.primary
+                    color: root.cPrimary
                     font.family: "Inter"
                     font.pixelSize: 16
                     font.bold: true
@@ -83,13 +115,13 @@ PanelWindow {
                     Layout.preferredWidth: 24
                     Layout.preferredHeight: 24
                     cursorShape: Qt.PointingHandCursor
+                    hoverEnabled: true
                     Text {
                         anchors.centerIn: parent
                         text: ""
-                        color: parent.containsMouse ? root.theme.primary : root.theme.text
+                        color: parent.containsMouse ? root.cPrimary : root.cText
                         font.family: "JetBrainsMono Nerd Font"
                     }
-                    hoverEnabled: true
                     onClicked: root.currentMonthOffset++
                 }
             }
@@ -97,17 +129,17 @@ PanelWindow {
             Rectangle {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 1
-                color: root.theme.surfaceHigh
+                color: root.cSurfaceHigh
             }
 
-            // Days of week
             RowLayout {
                 Layout.fillWidth: true
                 Repeater {
                     model: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
-                    Text {
+                    delegate: Text {
+                        required property string modelData
                         text: modelData
-                        color: root.theme.muted
+                        color: root.cMuted
                         font.family: "Inter"
                         font.pixelSize: 12
                         font.bold: true
@@ -117,7 +149,6 @@ PanelWindow {
                 }
             }
 
-            // Calendar Grid
             GridLayout {
                 columns: 7
                 rowSpacing: 8
@@ -126,53 +157,30 @@ PanelWindow {
                 Layout.fillHeight: true
 
                 Repeater {
-                    id: daysRepeater
-                    model: {
-                        let d = new Date()
-                        let curYear = d.getFullYear()
-                        let curMonth = d.getMonth()
-                        
-                        let targetDate = new Date(curYear, curMonth + root.currentMonthOffset, 1)
-                        let year = targetDate.getFullYear()
-                        let month = targetDate.getMonth()
-                        
-                        let daysInMonth = getDaysInMonth(year, month)
-                        let firstDay = getFirstDayOfMonth(year, month)
-                        let totalSlots = 42 // 6 rows of 7 days
-                        
-                        let days = []
-                        for (let i = 0; i < totalSlots; i++) {
-                            let dayNum = i - firstDay + 1
-                            if (i < firstDay || dayNum > daysInMonth) {
-                                days.push({ text: "", isToday: false })
-                            } else {
-                                let isToday = (root.currentMonthOffset === 0 && dayNum === sysClock.date.getDate())
-                                days.push({ text: dayNum.toString(), isToday: isToday })
-                            }
-                        }
-                        return days
-                    }
-
-                    Rectangle {
+                    model: root.buildMonthDays()
+                    delegate: Rectangle {
+                        required property string dayText
+                        required property bool isToday
                         Layout.fillWidth: true
                         Layout.preferredHeight: width
                         radius: width / 2
-                        color: modelData.isToday ? root.theme.primary : (mouseArea.containsMouse && modelData.text !== "" ? root.theme.surfaceHigh : "transparent")
-                        
+                        color: isToday ? root.cPrimary
+                            : (dayMouse.containsMouse && dayText !== "" ? root.cSurfaceHigh : "transparent")
+
                         Text {
                             anchors.centerIn: parent
-                            text: modelData.text
-                            color: modelData.isToday ? root.theme.base : root.theme.text
+                            text: parent.dayText
+                            color: parent.isToday ? root.cBase : root.cText
                             font.family: "Inter"
                             font.pixelSize: 13
-                            font.bold: modelData.isToday
+                            font.bold: parent.isToday
                         }
 
                         MouseArea {
-                            id: mouseArea
+                            id: dayMouse
                             anchors.fill: parent
-                            hoverEnabled: modelData.text !== ""
-                            cursorShape: modelData.text !== "" ? Qt.PointingHandCursor : Qt.ArrowCursor
+                            hoverEnabled: parent.dayText !== ""
+                            cursorShape: parent.dayText !== "" ? Qt.PointingHandCursor : Qt.ArrowCursor
                         }
                     }
                 }

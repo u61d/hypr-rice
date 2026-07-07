@@ -8,6 +8,7 @@ Rectangle {
     required property string icon
     property color accent: theme.secondary
     property string command: ""
+    signal clicked()
 
     Layout.preferredWidth: 30
     Layout.preferredHeight: 28
@@ -34,6 +35,7 @@ Rectangle {
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
         onClicked: {
+            root.clicked()
             if (root.command.length > 0)
                 Quickshell.execDetached(["sh", "-c", root.command])
         }

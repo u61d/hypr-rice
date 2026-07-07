@@ -9,7 +9,6 @@ ShellRoot {
     Theme { id: theme }
     HyprState { id: hypr }
 
-    // Global state
     QtObject {
         id: globalState
         property bool dashboardVisible: false
@@ -18,6 +17,19 @@ ShellRoot {
         property bool notificationCenterVisible: false
         property bool dndEnabled: false
         property bool calendarVisible: false
+    }
+
+    QtObject {
+        id: osdBridge
+        property string mode: "volume"
+        property int value: 0
+        property int tick: 0
+    }
+
+    QtObject {
+        id: screenshotBridge
+        property string path: ""
+        property int tick: 0
     }
 
     Variants {
@@ -51,28 +63,31 @@ ShellRoot {
             }
         }
 
-        // Notification Daemon (Overlay)
         PanelWindow {
             required property ShellScreen modelData
             screen: modelData
-            anchors.fill: parent
+            anchors.top: true
+            anchors.bottom: true
+            anchors.left: true
+            anchors.right: true
             color: "transparent"
             aboveWindows: true
             WlrLayershell.layer: WlrLayer.Overlay
             WlrLayershell.namespace: "notifications"
-            // Pass clicks through so it doesn't block the screen
             WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
             mask: null
 
             NotificationDaemon { theme: theme }
         }
 
-        // Dashboard Launcher (Overlay, toggleable)
         PanelWindow {
             id: dashboardWindow
             required property ShellScreen modelData
             screen: modelData
-            anchors.fill: parent
+            anchors.top: true
+            anchors.bottom: true
+            anchors.left: true
+            anchors.right: true
             color: "transparent"
             aboveWindows: true
             visible: globalState.dashboardVisible
@@ -83,37 +98,47 @@ ShellRoot {
             Dashboard { theme: theme; win: dashboardWindow }
         }
 
-        // Desktop Widget (Background layer)
         PanelWindow {
             required property ShellScreen modelData
             screen: modelData
-            anchors.fill: parent
+            anchors.top: true
+            anchors.bottom: true
+            anchors.left: true
+            anchors.right: true
             color: "transparent"
             WlrLayershell.layer: WlrLayer.Background
             WlrLayershell.namespace: "desktop-widget"
-            // Pass clicks to wallpaper/desktop
             WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
             mask: null
 
-            DesktopWidget { theme: theme }
+            DesktopWidget {
+                anchors.fill: parent
+                theme: theme
+            }
         }
 
-        // OSD Overlay (Volume/Brightness)
         PanelWindow {
             id: osdWindow
             required property ShellScreen modelData
             screen: modelData
             color: "transparent"
+            anchors.top: true
             anchors.bottom: true
-            anchors.bottomMargin: 100
-            anchors.horizontalCenter: true
+            anchors.left: true
+            anchors.right: true
             WlrLayershell.layer: WlrLayer.Overlay
             WlrLayershell.namespace: "osd"
             WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
             mask: null
             visible: false
 
-            OSD { theme: theme; win: osdWindow }
+            OSD {
+                theme: theme
+                win: osdWindow
+                anchors.bottom: parent.bottom
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.bottomMargin: 100
+            }
         }
 
         ScreenCapture { theme: theme; modelData: modelData }
@@ -146,11 +171,14 @@ ShellRoot {
         function toggleCalendar() {
             globalState.calendarVisible = !globalState.calendarVisible
         }
-        function showOsd(mode, val) {
-            // Signal the OSD window if it exists
-            if (typeof osdWindow !== "undefined") {
-                osdWindow.children[0].showOsd(mode, parseInt(val))
-            }
+        function showOsd(mode: string, val: string): void {
+            osdBridge.mode = mode
+            osdBridge.value = parseInt(val)
+            osdBridge.tick++
+        }
+        function showScreenshot(path: string): void {
+            screenshotBridge.path = path
+            screenshotBridge.tick++
         }
     }
 }

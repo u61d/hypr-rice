@@ -2,8 +2,12 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-QtObject {
+Item {
     id: root
+    width: 0
+    height: 0
+    visible: false
+
     property var workspaces: []
     property int activeWorkspace: 1
     property string activeTitle: ""
@@ -13,7 +17,6 @@ QtObject {
         Quickshell.execDetached(["hyprctl", "dispatch"].concat(command.split(" ")))
     }
 
-    // Only queries heavy JSON on boot, or if a window/workspace is physically added/removed
     function refreshWorkspaces() {
         if (!snapshot.running) snapshot.running = true
     }
@@ -27,7 +30,6 @@ QtObject {
         onTriggered: root.refreshWorkspaces()
     }
 
-    // 1. The structural snapshot
     Process {
         id: snapshot
         command: ["sh", "-c", "hyprctl -j workspaces; printf '\\n---HYPR-RICE---\\n'; hyprctl -j activeworkspace; printf '\\n---HYPR-RICE---\\n'; hyprctl -j activewindow; printf '\\n---HYPR-RICE---\\n'; hyprctl -j clients"]
@@ -39,15 +41,14 @@ QtObject {
                 try {
                     const rawWorkspaces = JSON.parse(chunks[0])
                     const clients = JSON.parse(chunks[3])
-                    
-                    // Enrich workspaces with window class lists
+
                     for (const ws of rawWorkspaces) {
                         ws.windowClasses = clients
                             .filter(c => c.workspace && c.workspace.id === ws.id)
                             .map(c => c.class || "unknown")
-                            .slice(0, 6) // Max 6 icons in tooltip
+                            .slice(0, 6)
                     }
-                    
+
                     root.workspaces = rawWorkspaces
                     root.activeWorkspace = JSON.parse(chunks[1]).id ?? root.activeWorkspace
                     const activeWindow = JSON.parse(chunks[2])
@@ -60,11 +61,9 @@ QtObject {
         }
     }
 
-    // 2. The zero-overhead Socket Listener
     Process {
         id: socatListener
         running: true
-        // Streams events instantly from Hyprland without polling
         command: ["sh", "-c", "socat -U - UNIX-CONNECT:$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock"]
         stdout: SplitParser {
             onRead: data => {

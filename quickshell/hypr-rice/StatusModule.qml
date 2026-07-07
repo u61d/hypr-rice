@@ -14,6 +14,16 @@ Rectangle {
     property int interval: 3000
     property string clickCommand: ""
     property string value: "--"
+    property bool thresholdColors: false
+
+    onValueChanged: {
+        if (!thresholdColors) return
+        const n = parseInt(value)
+        if (isNaN(n)) return
+        if (n >= 90) root.accent = theme.red
+        else if (n >= 75) root.accent = theme.yellow
+        else root.accent = theme.green
+    }
 
     implicitWidth: Math.max(58, label.implicitWidth + 18)
     Layout.preferredHeight: 28

@@ -11,4 +11,4 @@ else
 fi
 
 wl-copy < "$file"
-quickshell ipc call hypr-rice raw "screenshot:$file"
+quickshell ipc call hypr-rice showScreenshot "$file"

@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import QtQuick.Controls
 import Quickshell
 import Quickshell.Services.Notifications
+import Quickshell.Wayland
 
 PanelWindow {
     id: root
@@ -15,8 +16,10 @@ PanelWindow {
     color: "transparent"
     anchors.top: true
     anchors.right: true
-    anchors.topMargin: 50
-    anchors.rightMargin: 10
+    margins {
+        top: 50
+        right: 10
+    }
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.namespace: "notifcenter"
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand

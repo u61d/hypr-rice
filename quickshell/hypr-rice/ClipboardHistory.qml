@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import QtQuick.Controls
 import Quickshell
 import Quickshell.Io
+import Quickshell.Wayland
 
 PanelWindow {
     id: root
@@ -15,8 +16,10 @@ PanelWindow {
     color: "transparent"
     anchors.top: true
     anchors.right: true
-    anchors.topMargin: 50
-    anchors.rightMargin: 10
+    margins {
+        top: 50
+        right: 10
+    }
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.namespace: "clipboard"
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
@@ -61,9 +64,15 @@ PanelWindow {
     }
 
     function deleteItem(id) {
-        let proc = Qt.createQmlObject('import Quickshell.Io; Process { command: "cliphist decode " + id + " | cliphist delete" }', root)
-        proc.exited.connect(() => { loadHistory() })
-        proc.running = true
+        deleteProc.command = ["cliphist", "delete", id]
+        deleteProc.running = true
+    }
+
+    property string searchQuery: ""
+
+    Process {
+        id: deleteProc
+        onExited: loadHistory()
     }
 
     Rectangle {
@@ -107,6 +116,24 @@ PanelWindow {
                 color: root.theme.surfaceHigh
             }
 
+            TextField {
+                id: searchField
+                Layout.fillWidth: true
+                placeholderText: "Search clipboard..."
+                color: root.theme.text
+                placeholderTextColor: root.theme.muted
+                font.family: "Inter"
+                font.pixelSize: 13
+                padding: 8
+                background: Rectangle {
+                    radius: 8
+                    color: root.theme.surfaceHigh
+                    border.width: 1
+                    border.color: parent.activeFocus ? root.theme.primary : "transparent"
+                }
+                onTextChanged: root.searchQuery = text.toLowerCase()
+            }
+
             ListView {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
@@ -116,7 +143,9 @@ PanelWindow {
 
                 delegate: Rectangle {
                     width: parent.width
-                    height: 40
+                    height: visible ? 40 : 0
+                    visible: root.searchQuery === "" || (model.text || "").toLowerCase().includes(root.searchQuery)
+                    opacity: visible ? 1 : 0
                     color: containsMouse ? root.theme.surfaceHigh : "transparent"
                     radius: 6
 

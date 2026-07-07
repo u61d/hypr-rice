@@ -21,6 +21,6 @@ Text {
     MouseArea {
         anchors.fill: parent
         cursorShape: Qt.PointingHandCursor
-        onClicked: quickshell.ipc.call("hypr-rice", "toggleCalendar")
+        onClicked: Quickshell.execDetached(["quickshell", "ipc", "call", "hypr-rice", "toggleCalendar"])
     }
 }

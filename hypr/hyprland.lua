@@ -46,7 +46,47 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("wl-paste --watch cliphist store")
     hl.exec_cmd("hyprctl setcursor catppuccin-mocha-dark-cursors 24")
     hl.exec_cmd("hyprpm reload -n")
+    -- Plugin keys are registered only after hyprpm reload finishes.
+    hl.timer(500, false, apply_plugin_config)
 end)
+
+local function is_plugin_loaded(name)
+    if type(hl.get_loaded_plugins) ~= "function" then
+        return false
+    end
+    for _, plugin in ipairs(hl.get_loaded_plugins()) do
+        if plugin.name == name then
+            return true
+        end
+    end
+    return false
+end
+
+function apply_plugin_config()
+    local plugins = {}
+
+    if is_plugin_loaded("dynamic-cursors") then
+        plugins["dynamic-cursors"] = {
+            enabled = true,
+            mode = "stretch",
+            threshold = 2,
+            stretch_factor = 1.2,
+        }
+    end
+
+    if is_plugin_loaded("hyprexpo") then
+        plugins.hyprexpo = {
+            columns = 3,
+            gap_size = 5,
+            bg_col = "rgb(111111)",
+            workspace_method = "center current",
+        }
+    end
+
+    if next(plugins) then
+        hl.config({ plugin = plugins })
+    end
+end
 
 hl.env("XCURSOR_SIZE", "24")
 hl.env("XCURSOR_THEME", "catppuccin-mocha-dark-cursors")
@@ -129,29 +169,6 @@ hl.config({
     },
 })
 
--- Safely apply plugin configuration only if plugins are loaded
-pcall(function()
-    hl.config({
-        plugin = {
-            hyprtrails = {
-                color = "rgba(cba6f7ff)",
-            },
-            ["dynamic-cursors"] = {
-                enabled = true,
-                mode = "stretch",
-                threshold = 2,
-                stretch_factor = 1.2,
-            },
-            hyprexpo = {
-                columns = 3,
-                gap_size = 5,
-                bg_col = "rgb(111111)",
-                workspace_method = "center current",
-            }
-        }
-    })
-end)
-
 hl.gesture({
     fingers = 3,
     direction = "horizontal",
@@ -226,7 +243,8 @@ for i = 1, 10 do
 end
 
 hl.bind(mod .. " + S", hl.dsp.workspace.toggle_special("magic"))
-hl.bind(mod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:magic" }))
+hl.bind(mod .. " + SHIFT + S", hl.dsp.exec_cmd("~/.config/hypr/scripts/screenshot.sh area"))
+hl.bind(mod .. " + CTRL + S", hl.dsp.window.move({ workspace = "special:magic" }))
 hl.bind(mod .. " + mouse:272", hl.dsp.window.drag(), { mouse = true })
 hl.bind(mod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 

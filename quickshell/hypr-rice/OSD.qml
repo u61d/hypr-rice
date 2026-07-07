@@ -8,7 +8,7 @@ Rectangle {
     required property var theme
     required property var win
 
-    property string currentMode: "volume" // "volume" or "brightness"
+    property string currentMode: "volume"
     property int currentValue: 0
     property string currentIcon: "󰕾"
 
@@ -19,7 +19,6 @@ Rectangle {
     border.width: 1
     border.color: Qt.rgba(theme.primary.r, theme.primary.g, theme.primary.b, 0.3)
 
-    // Fade and scale animations for the window
     opacity: win.visible ? 1 : 0
     scale: win.visible ? 1 : 0.8
     Behavior on opacity { NumberAnimation { duration: 200 } }
@@ -72,22 +71,25 @@ Rectangle {
         onTriggered: win.visible = false
     }
 
-    // Expose methods for IPC
+    function showOsd(mode, val) {
+        root.currentMode = mode
+        root.currentValue = val
+        if (mode === "volume") {
+            if (val === 0) root.currentIcon = "󰖁"
+            else if (val < 30) root.currentIcon = "󰕿"
+            else if (val < 70) root.currentIcon = "󰖀"
+            else root.currentIcon = "󰕾"
+        } else {
+            root.currentIcon = "󰃠"
+        }
+        win.visible = true
+        hideTimer.restart()
+    }
+
     Connections {
-        target: win
-        function onShowOsd(mode, val) {
-            root.currentMode = mode
-            root.currentValue = val
-            if (mode === "volume") {
-                if (val === 0) root.currentIcon = "󰖁"
-                else if (val < 30) root.currentIcon = "󰕿"
-                else if (val < 70) root.currentIcon = "󰖀"
-                else root.currentIcon = "󰕾"
-            } else {
-                root.currentIcon = "󰃠"
-            }
-            win.visible = true
-            hideTimer.restart()
+        target: osdBridge
+        function onTickChanged() {
+            root.showOsd(osdBridge.mode, osdBridge.value)
         }
     }
 }

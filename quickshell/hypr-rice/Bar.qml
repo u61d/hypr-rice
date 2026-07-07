@@ -1,5 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
+import Quickshell
+import Quickshell.Io
 
 Item {
     id: root
@@ -72,36 +74,37 @@ Item {
                     Layout.preferredWidth: wifiIcon.width
                     Layout.preferredHeight: 28
                     
-                    IconButton {
-                        id: wifiIcon
-                        theme: root.theme
-                        icon: "󰤨"
-                        // Custom clicked signal handled here
-                        property string command: ""
-                        Timer {
-                            interval: 3000
-                            running: true
-                            repeat: true
-                            onTriggered: wifiCheck.running = true
-                        }
+                IconButton {
+                    id: wifiIcon
+                    theme: root.theme
+                    icon: "󰤭"
+                    property string command: ""
+                    onClicked: networkMenu.expanded = !networkMenu.expanded
 
-                        // We can't nest Process directly in a standard QML Item without import Quickshell.Io
-                        // so we'll instantiate it dynamically
-                        property var wifiCheck: Qt.createQmlObject('import Quickshell.Io; Process { command: "nmcli -t -f active,signal dev wifi | grep \'^yes\' | cut -d\':\' -f2 | head -n1" }', wifiIcon)
+                    Timer {
+                        interval: 3000
+                        running: true
+                        repeat: true
+                        onTriggered: wifiCheck.running = true
+                    }
 
-                        Component.onCompleted: {
-                            wifiIcon.children[1].clicked.connect(() => networkMenu.expanded = !networkMenu.expanded)
-                            wifiCheck.stdout.connect((data) => {
-                                let sig = parseInt(data)
+                    Process {
+                        id: wifiCheck
+                        command: ["sh", "-c", "nmcli -t -f active,signal dev wifi | grep '^yes' | cut -d':' -f2 | head -n1"]
+                        stdout: StdioCollector {
+                            onStreamFinished: {
+                                const sig = parseInt(text.trim())
                                 if (isNaN(sig)) wifiIcon.icon = "󰤭"
                                 else if (sig < 30) wifiIcon.icon = "󰤟"
                                 else if (sig < 60) wifiIcon.icon = "󰤢"
                                 else if (sig < 80) wifiIcon.icon = "󰤥"
                                 else wifiIcon.icon = "󰤨"
-                            })
-                            wifiCheck.running = true
+                            }
                         }
                     }
+
+                    Component.onCompleted: wifiCheck.running = true
+                }
                     
                     NetworkMenu {
                         id: networkMenu
@@ -122,7 +125,7 @@ Item {
                         theme: root.theme
                         icon: "󰂯"
                         property string command: ""
-                        Component.onCompleted: btIcon.children[1].clicked.connect(() => bluetoothMenu.expanded = !bluetoothMenu.expanded)
+                        onClicked: bluetoothMenu.expanded = !bluetoothMenu.expanded
                     }
                     
                     BluetoothMenu {
@@ -138,6 +141,13 @@ Item {
                     theme: root.theme
                     icon: globalState.dndEnabled ? "󰂛" : "󰂚"
                     accent: globalState.dndEnabled ? root.theme.muted : root.theme.primary
+                    command: "quickshell ipc call hypr-rice toggleDnd"
+                }
+
+                IconButton {
+                    theme: root.theme
+                    icon: "󰂚"
+                    accent: root.theme.primary
                     command: "quickshell ipc call hypr-rice toggleNotificationCenter"
                 }
 
@@ -151,7 +161,7 @@ Item {
                         theme: root.theme
                         icon: "󰃠"
                         property string command: ""
-                        Component.onCompleted: brightnessIcon.children[1].clicked.connect(() => brightnessMenu.expanded = !brightnessMenu.expanded)
+                        onClicked: brightnessMenu.expanded = !brightnessMenu.expanded
                     }
                     
                     BrightnessMenu {
@@ -168,7 +178,8 @@ Item {
                     icon: "󰚰"
                     accent: root.theme.yellow
                     command: "checkupdates 2>/dev/null | wc -l || echo 0"
-                    interval: 3600000 // 1 hour
+                    interval: 3600000
+                    clickCommand: "kitty -e bash -lc 'checkupdates; echo; read -n1 -s -r -p \"Press any key...\"'"
                 }
                 StatusModule {
                     theme: root.theme
@@ -187,9 +198,10 @@ Item {
                 StatusModule {
                     theme: root.theme
                     icon: "󰋊"
-                    accent: root.theme.blue
-                    command: "df -h / | awk 'NR==2 {print $5}'"
+                    accent: root.theme.secondary
+                    command: "df -h / | awk 'NR==2 {gsub(/%/,\"\"); print $5\"%\"}'"
                     interval: 60000
+                    thresholdColors: true
                 }
                 Battery {
                     theme: root.theme

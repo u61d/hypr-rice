@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
+import Quickshell.Wayland
 
 PanelWindow {
     id: root
@@ -14,8 +15,10 @@ PanelWindow {
     color: "transparent"
     anchors.top: true
     anchors.right: true
-    anchors.topMargin: 20
-    anchors.rightMargin: 20
+    margins {
+        top: 20
+        right: 20
+    }
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.namespace: "screencapture"
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
@@ -98,8 +101,7 @@ PanelWindow {
                         MouseArea {
                             anchors.fill: parent
                             onClicked: {
-                                let proc = Qt.createQmlObject('import Quickshell.Io; Process { command: "wl-copy < " + root.imagePath }', root)
-                                proc.running = true
+                                Quickshell.execDetached(["sh", "-c", "wl-copy < " + JSON.stringify(root.imagePath)])
                                 root.visible = false
                             }
                         }
@@ -133,13 +135,12 @@ PanelWindow {
     }
 
     Connections {
-        target: Ipc
-        function onMessageReceived(msg) {
-            if (msg.startsWith("screenshot:")) {
-                root.imagePath = msg.split(":")[1]
-                root.visible = true
-                hideTimer.restart()
-            }
+        target: screenshotBridge
+        function onTickChanged() {
+            if (screenshotBridge.path.length === 0) return
+            root.imagePath = screenshotBridge.path
+            root.visible = true
+            hideTimer.restart()
         }
     }
 }
