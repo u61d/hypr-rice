@@ -6,16 +6,15 @@ import Quickshell.Networking
 
 Rectangle {
     id: root
-    required property var theme
     property bool expanded: false
 
     implicitWidth: expanded ? 280 : 0
     implicitHeight: expanded ? Math.min(360, wifiList.contentHeight + header.height + 28) : 0
     radius: 16
     clip: true
-    color: Qt.rgba(theme.base.r, theme.base.g, theme.base.b, 0.92)
+    color: Qt.rgba(Theme.base.r, Theme.base.g, Theme.base.b, 0.92)
     border.width: 1
-    border.color: Qt.rgba(theme.primary.r, theme.primary.g, theme.primary.b, 0.3)
+    border.color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.3)
 
     opacity: expanded ? 1 : 0
     visible: opacity > 0
@@ -38,7 +37,7 @@ Rectangle {
             spacing: 8
             Text {
                 text: "󰤨  Wi-Fi"
-                color: root.theme.text
+                color: Theme.text
                 font.family: "JetBrainsMono Nerd Font"
                 font.pixelSize: 15
                 font.bold: true
@@ -48,12 +47,12 @@ Rectangle {
                 Layout.preferredWidth: 40
                 Layout.preferredHeight: 22
                 radius: 11
-                color: root.theme.primary
+                color: Theme.primary
 
                 Text {
                     anchors.centerIn: parent
                     text: "ON"
-                    color: root.theme.base
+                    color: Theme.base
                     font.family: "JetBrainsMono Nerd Font"
                     font.pixelSize: 10
                     font.bold: true
@@ -64,7 +63,7 @@ Rectangle {
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 1
-            color: Qt.rgba(root.theme.surfaceHigh.r, root.theme.surfaceHigh.g, root.theme.surfaceHigh.b, 0.4)
+            color: Qt.rgba(Theme.surfaceHigh.r, Theme.surfaceHigh.g, Theme.surfaceHigh.b, 0.4)
         }
 
         // Network list
@@ -83,7 +82,7 @@ Rectangle {
                 width: ListView.view.width
                 height: 42
                 radius: 10
-                color: netMouse.containsMouse ? Qt.rgba(root.theme.surfaceHigh.r, root.theme.surfaceHigh.g, root.theme.surfaceHigh.b, 0.4) : "transparent"
+                color: netMouse.containsMouse ? Qt.rgba(Theme.surfaceHigh.r, Theme.surfaceHigh.g, Theme.surfaceHigh.b, 0.4) : "transparent"
 
                 Behavior on color { ColorAnimation { duration: 150 } }
 
@@ -99,7 +98,7 @@ Rectangle {
                             if (sig > 25) return "󰤢"
                             return "󰤟"
                         }
-                        color: modelData.active === "yes" ? root.theme.green : root.theme.muted
+                        color: modelData.active === "yes" ? Theme.green : Theme.muted
                         font.family: "JetBrainsMono Nerd Font"
                         font.pixelSize: 16
                     }
@@ -108,7 +107,7 @@ Rectangle {
                         spacing: 1
                         Text {
                             text: modelData.ssid || "Hidden"
-                            color: root.theme.text
+                            color: Theme.text
                             font.family: "JetBrainsMono Nerd Font"
                             font.pixelSize: 13
                             font.bold: modelData.active === "yes"
@@ -118,14 +117,14 @@ Rectangle {
                         Text {
                             visible: modelData.active === "yes"
                             text: "Connected"
-                            color: root.theme.green
+                            color: Theme.green
                             font.family: "JetBrainsMono Nerd Font"
                             font.pixelSize: 10
                         }
                     }
                     Text {
                         text: (modelData.signal || "0") + "%"
-                        color: root.theme.muted
+                        color: Theme.muted
                         font.family: "JetBrainsMono Nerd Font"
                         font.pixelSize: 11
                     }

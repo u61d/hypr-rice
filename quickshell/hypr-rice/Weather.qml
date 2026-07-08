@@ -5,38 +5,44 @@ import Quickshell.Io
 
 Rectangle {
     id: root
-    required property var theme
 
     width: 200
     height: 100
     radius: 16
-    color: Qt.rgba(theme.base.r, theme.base.g, theme.base.b, 0.5)
+    color: Qt.rgba(Theme.base.r, Theme.base.g, Theme.base.b, 0.5)
     border.width: 1
-    border.color: Qt.rgba(theme.primary.r, theme.primary.g, theme.primary.b, 0.3)
+    border.color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.3)
 
     property string temp: "--"
     property string conditionText: "Loading..."
     property string conditionIcon: "󰖐"
 
     function updateWeather() {
+        if (!weatherProc.running) weatherProc.running = true
+    }
+
+    Process {
+        id: weatherProc
         // wttr.in format: %t (temp), %C (condition text)
-        let proc = Qt.createQmlObject('import Quickshell.Io; Process { command: "curl -s \'wttr.in/?format=%t|%C\'" }', root)
-        proc.stdout.connect((data) => {
-            let parts = data.trim().split('|')
-            if (parts.length >= 2) {
-                root.temp = parts[0].replace("+", "")
-                root.conditionText = parts[1]
-                
-                let c = parts[1].toLowerCase()
-                if (c.includes("clear") || c.includes("sunny")) root.conditionIcon = "󰖙"
-                else if (c.includes("cloud") || c.includes("overcast")) root.conditionIcon = "󰖐"
-                else if (c.includes("rain") || c.includes("drizzle")) root.conditionIcon = "󰖗"
-                else if (c.includes("snow") || c.includes("ice")) root.conditionIcon = "󰖘"
-                else if (c.includes("thunder") || c.includes("storm")) root.conditionIcon = "󰙾"
-                else root.conditionIcon = "󰖐"
+        command: ["sh", "-c", "curl -s 'wttr.in/?format=%t|%C'"]
+        stdout: StdioCollector {
+            id: weatherOutput
+            onStreamFinished: {
+                let parts = weatherOutput.text.trim().split('|')
+                if (parts.length >= 2) {
+                    root.temp = parts[0].replace("+", "")
+                    root.conditionText = parts[1]
+
+                    let c = parts[1].toLowerCase()
+                    if (c.includes("clear") || c.includes("sunny")) root.conditionIcon = "󰖙"
+                    else if (c.includes("cloud") || c.includes("overcast")) root.conditionIcon = "󰖐"
+                    else if (c.includes("rain") || c.includes("drizzle")) root.conditionIcon = "󰖗"
+                    else if (c.includes("snow") || c.includes("ice")) root.conditionIcon = "󰖘"
+                    else if (c.includes("thunder") || c.includes("storm")) root.conditionIcon = "󰙾"
+                    else root.conditionIcon = "󰖐"
+                }
             }
-        })
-        proc.running = true
+        }
     }
 
     Timer {
@@ -55,7 +61,7 @@ Rectangle {
 
         Text {
             text: root.conditionIcon
-            color: root.theme.primary
+            color: Theme.primary
             font.family: "JetBrainsMono Nerd Font"
             font.pixelSize: 42
             Layout.alignment: Qt.AlignVCenter
@@ -67,7 +73,7 @@ Rectangle {
 
             Text {
                 text: root.temp
-                color: root.theme.text
+                color: Theme.text
                 font.family: "Inter"
                 font.pixelSize: 24
                 font.bold: true
@@ -75,7 +81,7 @@ Rectangle {
 
             Text {
                 text: root.conditionText
-                color: root.theme.muted
+                color: Theme.muted
                 font.family: "Inter"
                 font.pixelSize: 13
                 elide: Text.ElideRight

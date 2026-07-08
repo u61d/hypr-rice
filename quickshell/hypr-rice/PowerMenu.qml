@@ -6,7 +6,6 @@ import Quickshell.Wayland
 
 PanelWindow {
     id: root
-    required property var theme
     required property ShellScreen modelData
     screen: modelData
     anchors.top: true
@@ -50,9 +49,9 @@ PanelWindow {
                     width: 120
                     height: 120
                     radius: 20
-                    color: Qt.rgba(root.theme.base.r, root.theme.base.g, root.theme.base.b, 0.8)
+                    color: Qt.rgba(Theme.base.r, Theme.base.g, Theme.base.b, 0.8)
                     border.width: 1
-                    border.color: hoverArea.containsMouse ? root.theme[model.colorId] : "transparent"
+                    border.color: hoverArea.containsMouse ? Theme[model.colorId] : "transparent"
 
                     scale: hoverArea.pressed ? 0.95 : (hoverArea.containsMouse ? 1.05 : 1)
                     Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.OutBack } }
@@ -63,14 +62,14 @@ PanelWindow {
 
                         Text {
                             text: model.icon
-                            color: hoverArea.containsMouse ? root.theme[model.colorId] : root.theme.text
+                            color: hoverArea.containsMouse ? Theme[model.colorId] : Theme.text
                             font.family: "JetBrainsMono Nerd Font"
                             font.pixelSize: 36
                             Layout.alignment: Qt.AlignHCenter
                         }
                         Text {
                             text: model.name
-                            color: root.theme.text
+                            color: Theme.text
                             font.family: "Inter"
                             font.pixelSize: 14
                             Layout.alignment: Qt.AlignHCenter

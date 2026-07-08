@@ -7,12 +7,11 @@ import Quickshell.Wayland
 
 PanelWindow {
     id: root
-    required property var theme
     required property ShellScreen modelData
     screen: modelData
 
-    width: 350
-    height: 500
+    implicitWidth: 350
+    implicitHeight: 500
     color: "transparent"
     anchors.top: true
     anchors.right: true
@@ -78,9 +77,9 @@ PanelWindow {
     Rectangle {
         anchors.fill: parent
         radius: 12
-        color: Qt.rgba(theme.base.r, theme.base.g, theme.base.b, 0.95)
+        color: Qt.rgba(Theme.base.r, Theme.base.g, Theme.base.b, 0.95)
         border.width: 1
-        border.color: theme.primary
+        border.color: Theme.primary
 
         ColumnLayout {
             anchors.fill: parent
@@ -90,7 +89,7 @@ PanelWindow {
                 Layout.fillWidth: true
                 Text {
                     text: "󰅌 Clipboard History"
-                    color: root.theme.primary
+                    color: Theme.primary
                     font.family: "JetBrainsMono Nerd Font"
                     font.pixelSize: 16
                     font.bold: true
@@ -102,7 +101,7 @@ PanelWindow {
                     Text {
                         anchors.centerIn: parent
                         text: "󰅖"
-                        color: parent.containsMouse ? root.theme.red : root.theme.text
+                        color: parent.containsMouse ? Theme.red : Theme.text
                         font.family: "JetBrainsMono Nerd Font"
                     }
                     hoverEnabled: true
@@ -113,23 +112,23 @@ PanelWindow {
             Rectangle {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 1
-                color: root.theme.surfaceHigh
+                color: Theme.surfaceHigh
             }
 
             TextField {
                 id: searchField
                 Layout.fillWidth: true
                 placeholderText: "Search clipboard..."
-                color: root.theme.text
-                placeholderTextColor: root.theme.muted
+                color: Theme.text
+                placeholderTextColor: Theme.muted
                 font.family: "Inter"
                 font.pixelSize: 13
                 padding: 8
                 background: Rectangle {
                     radius: 8
-                    color: root.theme.surfaceHigh
+                    color: Theme.surfaceHigh
                     border.width: 1
-                    border.color: parent.activeFocus ? root.theme.primary : "transparent"
+                    border.color: parent.activeFocus ? Theme.primary : "transparent"
                 }
                 onTextChanged: root.searchQuery = text.toLowerCase()
             }
@@ -146,7 +145,7 @@ PanelWindow {
                     height: visible ? 40 : 0
                     visible: root.searchQuery === "" || (model.text || "").toLowerCase().includes(root.searchQuery)
                     opacity: visible ? 1 : 0
-                    color: containsMouse ? root.theme.surfaceHigh : "transparent"
+                    color: containsMouse ? Theme.surfaceHigh : "transparent"
                     radius: 6
 
                     RowLayout {
@@ -156,7 +155,7 @@ PanelWindow {
 
                         Text {
                             text: model.text
-                            color: root.theme.text
+                            color: Theme.text
                             font.family: "Inter"
                             font.pixelSize: 13
                             elide: Text.ElideRight
@@ -172,7 +171,7 @@ PanelWindow {
                             Text {
                                 anchors.centerIn: parent
                                 text: "󰆴"
-                                color: parent.containsMouse ? root.theme.red : root.theme.muted
+                                color: parent.containsMouse ? Theme.red : Theme.muted
                                 font.family: "JetBrainsMono Nerd Font"
                             }
                             onClicked: deleteItem(model.id)

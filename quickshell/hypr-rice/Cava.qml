@@ -5,7 +5,6 @@ import Quickshell.Io
 
 Row {
     id: root
-    required property var theme
     
     spacing: 3
     
@@ -16,7 +15,7 @@ Row {
         Rectangle {
             width: 8
             height: Math.max(2, root.values[index] * 2.5)
-            color: root.theme.primary
+            color: Theme.primary
             radius: 4
             anchors.verticalCenter: parent.verticalCenter
             

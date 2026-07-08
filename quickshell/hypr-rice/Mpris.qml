@@ -2,10 +2,10 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Services.Mpris
+import Quickshell.Widgets
 
 Rectangle {
     id: root
-    required property var theme
 
     // Only get players that can actually be controlled/read
     property var activePlayer: Mpris.players.values.find(p => p.canControl)
@@ -17,9 +17,9 @@ Rectangle {
     implicitWidth: visible && activePlayer ? (mouse.containsMouse ? 240 : Math.min(200, Math.max(100, row.implicitWidth + 24))) : 0
     radius: 11
     
-    color: mouse.containsMouse ? Qt.rgba(theme.primary.r, theme.primary.g, theme.primary.b, 0.18) : "transparent"
+    color: mouse.containsMouse ? Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.18) : "transparent"
     border.width: 1
-    border.color: mouse.containsMouse ? Qt.rgba(theme.primary.r, theme.primary.g, theme.primary.b, 0.4) : "transparent"
+    border.color: mouse.containsMouse ? Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.4) : "transparent"
     
     Behavior on implicitWidth { NumberAnimation { duration: 320; easing.type: Easing.OutExpo } }
     Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutCubic } }
@@ -47,7 +47,7 @@ Rectangle {
             
             Text {
                 text: activePlayer && activePlayer.isPlaying ? "󰏤" : "󰐊"
-                color: root.theme.primary
+                color: Theme.primary
                 font.family: "JetBrainsMono Nerd Font"
                 font.pixelSize: 14
                 font.bold: true
@@ -55,7 +55,7 @@ Rectangle {
 
             Text {
                 text: activePlayer ? (activePlayer.trackTitle || "Unknown") : ""
-                color: root.theme.text
+                color: Theme.text
                 font.family: "JetBrainsMono Nerd Font"
                 font.pixelSize: 13
                 font.bold: true
@@ -74,32 +74,23 @@ Rectangle {
                 Layout.fillWidth: true
                 spacing: 8
 
-                Image {
-                    source: activePlayer && activePlayer.trackArtUrl ? activePlayer.trackArtUrl : ""
+                ClippingWrapperRectangle {
                     Layout.preferredWidth: 20
                     Layout.preferredHeight: 20
-                    fillMode: Image.PreserveAspectCrop
-                    visible: source != ""
-                    layer.enabled: true
-                    layer.effect: ShaderEffect {
-                        fragmentShader: "
-                            varying highp vec2 qt_TexCoord0;
-                            uniform sampler2D source;
-                            uniform lowp float qt_Opacity;
-                            void main() {
-                                vec4 color = texture2D(source, qt_TexCoord0);
-                                vec2 d = qt_TexCoord0 - vec2(0.5, 0.5);
-                                float r = length(d);
-                                if (r > 0.5) discard;
-                                gl_FragColor = color * qt_Opacity;
-                            }
-                        "
+                    radius: 10
+                    color: "transparent"
+                    visible: activePlayer && activePlayer.trackArtUrl != ""
+
+                    Image {
+                        anchors.fill: parent
+                        source: activePlayer && activePlayer.trackArtUrl ? activePlayer.trackArtUrl : ""
+                        fillMode: Image.PreserveAspectCrop
                     }
                 }
 
                 Text {
                     text: activePlayer ? (activePlayer.trackTitle || "Unknown") : ""
-                    color: root.theme.text
+                    color: Theme.text
                     font.family: "JetBrainsMono Nerd Font"
                     font.pixelSize: 12
                     font.bold: true
@@ -114,7 +105,7 @@ Rectangle {
                     Text {
                         anchors.centerIn: parent
                         text: "󰒮"
-                        color: parent.containsMouse ? root.theme.primary : root.theme.text
+                        color: parent.containsMouse ? Theme.primary : Theme.text
                         font.family: "JetBrainsMono Nerd Font"
                         font.pixelSize: 14
                     }
@@ -129,7 +120,7 @@ Rectangle {
                     Text {
                         anchors.centerIn: parent
                         text: activePlayer && activePlayer.isPlaying ? "󰏤" : "󰐊"
-                        color: parent.containsMouse ? root.theme.primary : root.theme.text
+                        color: parent.containsMouse ? Theme.primary : Theme.text
                         font.family: "JetBrainsMono Nerd Font"
                         font.pixelSize: 14
                     }
@@ -144,7 +135,7 @@ Rectangle {
                     Text {
                         anchors.centerIn: parent
                         text: "󰒭"
-                        color: parent.containsMouse ? root.theme.primary : root.theme.text
+                        color: parent.containsMouse ? Theme.primary : Theme.text
                         font.family: "JetBrainsMono Nerd Font"
                         font.pixelSize: 14
                     }
@@ -154,11 +145,11 @@ Rectangle {
             }
 
             Rectangle {
-                visible: activePlayer && activePlayer.length > 0
+                visible: !!(activePlayer && activePlayer.length > 0)
                 Layout.fillWidth: true
                 Layout.preferredHeight: 3
                 radius: 1.5
-                color: Qt.rgba(root.theme.surfaceHigh.r, root.theme.surfaceHigh.g, root.theme.surfaceHigh.b, 0.6)
+                color: Qt.rgba(Theme.surfaceHigh.r, Theme.surfaceHigh.g, Theme.surfaceHigh.b, 0.6)
 
                 Rectangle {
                     width: {
@@ -169,7 +160,7 @@ Rectangle {
                     }
                     height: parent.height
                     radius: 1.5
-                    color: root.theme.primary
+                    color: Theme.primary
                 }
             }
         }

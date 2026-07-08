@@ -4,9 +4,8 @@ import Quickshell
 
 Rectangle {
     id: root
-    required property var theme
     required property string icon
-    property color accent: theme.secondary
+    property color accent: Theme.secondary
     property string command: ""
     signal clicked()
 

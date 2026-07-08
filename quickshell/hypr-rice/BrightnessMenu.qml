@@ -6,7 +6,6 @@ import Quickshell.Io
 
 Rectangle {
     id: root
-    required property var theme
     property bool expanded: false
     property int brightness: 0
 
@@ -14,9 +13,9 @@ Rectangle {
     implicitHeight: expanded ? 80 : 0
     radius: 16
     clip: true
-    color: Qt.rgba(theme.base.r, theme.base.g, theme.base.b, 0.92)
+    color: Qt.rgba(Theme.base.r, Theme.base.g, Theme.base.b, 0.92)
     border.width: 1
-    border.color: Qt.rgba(theme.primary.r, theme.primary.g, theme.primary.b, 0.3)
+    border.color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.3)
 
     opacity: expanded ? 1 : 0
     visible: opacity > 0
@@ -52,7 +51,7 @@ Rectangle {
 
         Text {
             text: "󰃠"
-            color: root.theme.primary
+            color: Theme.primary
             font.family: "JetBrainsMono Nerd Font"
             font.pixelSize: 20
         }
@@ -76,12 +75,12 @@ Rectangle {
                 width: slider.availableWidth
                 height: implicitHeight
                 radius: 3
-                color: Qt.rgba(root.theme.surfaceHigh.r, root.theme.surfaceHigh.g, root.theme.surfaceHigh.b, 0.6)
+                color: Qt.rgba(Theme.surfaceHigh.r, Theme.surfaceHigh.g, Theme.surfaceHigh.b, 0.6)
 
                 Rectangle {
                     width: slider.visualPosition * parent.width
                     height: parent.height
-                    color: root.theme.primary
+                    color: Theme.primary
                     radius: 3
                 }
             }
@@ -92,8 +91,8 @@ Rectangle {
                 implicitWidth: 16
                 implicitHeight: 16
                 radius: 8
-                color: slider.pressed ? root.theme.surfaceHigh : root.theme.text
-                border.color: root.theme.primary
+                color: slider.pressed ? Theme.surfaceHigh : Theme.text
+                border.color: Theme.primary
             }
         }
     }

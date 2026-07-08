@@ -6,9 +6,6 @@ import Quickshell.Wayland
 ShellRoot {
     id: root
 
-    Theme { id: theme }
-    HyprState { id: hypr }
-
     QtObject {
         id: globalState
         property bool dashboardVisible: false
@@ -56,13 +53,14 @@ ShellRoot {
 
             Bar {
                 anchors.fill: parent
-                theme: theme
-                hypr: hypr
                 panelWindow: barWindow
                 screenName: modelData.name
             }
         }
+    }
 
+    Variants {
+        model: Quickshell.screens
         PanelWindow {
             required property ShellScreen modelData
             screen: modelData
@@ -77,9 +75,12 @@ ShellRoot {
             WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
             mask: null
 
-            NotificationDaemon { theme: theme }
+            NotificationDaemon {}
         }
+    }
 
+    Variants {
+        model: Quickshell.screens
         PanelWindow {
             id: dashboardWindow
             required property ShellScreen modelData
@@ -95,9 +96,12 @@ ShellRoot {
             WlrLayershell.namespace: "dashboard"
             WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
             
-            Dashboard { theme: theme; win: dashboardWindow }
+            Dashboard { win: dashboardWindow }
         }
+    }
 
+    Variants {
+        model: Quickshell.screens
         PanelWindow {
             required property ShellScreen modelData
             screen: modelData
@@ -113,10 +117,12 @@ ShellRoot {
 
             DesktopWidget {
                 anchors.fill: parent
-                theme: theme
             }
         }
+    }
 
+    Variants {
+        model: Quickshell.screens
         PanelWindow {
             id: osdWindow
             required property ShellScreen modelData
@@ -133,19 +139,37 @@ ShellRoot {
             visible: false
 
             OSD {
-                theme: theme
                 win: osdWindow
                 anchors.bottom: parent.bottom
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.bottomMargin: 100
             }
         }
+    }
 
-        ScreenCapture { theme: theme; modelData: modelData }
-        ClipboardHistory { theme: theme; modelData: modelData }
-        PowerMenu { theme: theme; modelData: modelData }
-        NotificationCenter { theme: theme; modelData: modelData }
-        CalendarPopup { theme: theme; modelData: modelData }
+    Variants {
+        model: Quickshell.screens
+        ScreenCapture { modelData: modelData }
+    }
+
+    Variants {
+        model: Quickshell.screens
+        ClipboardHistory { modelData: modelData }
+    }
+
+    Variants {
+        model: Quickshell.screens
+        PowerMenu { modelData: modelData }
+    }
+
+    Variants {
+        model: Quickshell.screens
+        NotificationCenter { modelData: modelData }
+    }
+
+    Variants {
+        model: Quickshell.screens
+        CalendarPopup { modelData: modelData }
     }
 
     IpcHandler {

@@ -6,11 +6,10 @@ import Quickshell.Io
 Rectangle {
     id: root
 
-    required property var theme
     required property string icon
     required property string command
 
-    property color accent: theme.secondary
+    property color accent: Theme.secondary
     property int interval: 3000
     property string clickCommand: ""
     property string value: "--"
@@ -20,9 +19,9 @@ Rectangle {
         if (!thresholdColors) return
         const n = parseInt(value)
         if (isNaN(n)) return
-        if (n >= 90) root.accent = theme.red
-        else if (n >= 75) root.accent = theme.yellow
-        else root.accent = theme.green
+        if (n >= 90) root.accent = Theme.red
+        else if (n >= 75) root.accent = Theme.yellow
+        else root.accent = Theme.green
     }
 
     implicitWidth: Math.max(58, label.implicitWidth + 18)

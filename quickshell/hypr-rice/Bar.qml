@@ -5,8 +5,6 @@ import Quickshell.Io
 
 Item {
     id: root
-    required property var theme
-    required property var hypr
     required property var panelWindow
     required property string screenName
 
@@ -16,18 +14,12 @@ Item {
 
         Pill {
             Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
-            theme: root.theme
             RowLayout {
-                anchors.fill: parent
-                anchors.margins: 3
+                anchors.centerIn: parent
                 spacing: 4
                 Workspaces {
-                    theme: root.theme
-                    hypr: root.hypr
                 }
                 ActiveWindow {
-                    theme: root.theme
-                    hypr: root.hypr
                     Layout.maximumWidth: 420
                 }
             }
@@ -37,14 +29,12 @@ Item {
 
         Pill {
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-            theme: root.theme
             RowLayout {
-                anchors.fill: parent
-                anchors.margins: 4
+                anchors.centerIn: parent
                 spacing: 10
-                Mpris { theme: root.theme }
-                Cava { theme: root.theme }
-                Clock { theme: root.theme }
+                Mpris {}
+                Cava {}
+                Clock {}
             }
         }
 
@@ -52,17 +42,13 @@ Item {
 
         Pill {
             Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-            theme: root.theme
             RowLayout {
-                anchors.fill: parent
-                anchors.margins: 4
+                anchors.centerIn: parent
                 spacing: 4
                 Tray {
-                    theme: root.theme
                     panelWindow: root.panelWindow
                 }
                 StatusModule {
-                    theme: root.theme
                     icon: "󰕾"
                     command: "wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{printf \"%d%%\", $2 * 100}'"
                     interval: 1500
@@ -76,7 +62,6 @@ Item {
                     
                 IconButton {
                     id: wifiIcon
-                    theme: root.theme
                     icon: "󰤭"
                     property string command: ""
                     onClicked: networkMenu.expanded = !networkMenu.expanded
@@ -108,7 +93,6 @@ Item {
                     
                     NetworkMenu {
                         id: networkMenu
-                        theme: root.theme
                         anchors.top: parent.bottom
                         anchors.topMargin: 12
                         anchors.right: parent.right
@@ -122,7 +106,6 @@ Item {
                     
                     IconButton {
                         id: btIcon
-                        theme: root.theme
                         icon: "󰂯"
                         property string command: ""
                         onClicked: bluetoothMenu.expanded = !bluetoothMenu.expanded
@@ -130,7 +113,6 @@ Item {
                     
                     BluetoothMenu {
                         id: bluetoothMenu
-                        theme: root.theme
                         anchors.top: parent.bottom
                         anchors.topMargin: 12
                         anchors.right: parent.right
@@ -138,16 +120,14 @@ Item {
                 }
 
                 IconButton {
-                    theme: root.theme
                     icon: globalState.dndEnabled ? "󰂛" : "󰂚"
-                    accent: globalState.dndEnabled ? root.theme.muted : root.theme.primary
+                    accent: globalState.dndEnabled ? Theme.muted : Theme.primary
                     command: "quickshell ipc call hypr-rice toggleDnd"
                 }
 
                 IconButton {
-                    theme: root.theme
                     icon: "󰂚"
-                    accent: root.theme.primary
+                    accent: Theme.primary
                     command: "quickshell ipc call hypr-rice toggleNotificationCenter"
                 }
 
@@ -158,7 +138,6 @@ Item {
                     
                     IconButton {
                         id: brightnessIcon
-                        theme: root.theme
                         icon: "󰃠"
                         property string command: ""
                         onClicked: brightnessMenu.expanded = !brightnessMenu.expanded
@@ -166,7 +145,6 @@ Item {
                     
                     BrightnessMenu {
                         id: brightnessMenu
-                        theme: root.theme
                         anchors.top: parent.bottom
                         anchors.topMargin: 12
                         anchors.right: parent.right
@@ -174,48 +152,40 @@ Item {
                 }
 
                 StatusModule {
-                    theme: root.theme
                     icon: "󰚰"
-                    accent: root.theme.yellow
+                    accent: Theme.yellow
                     command: "checkupdates 2>/dev/null | wc -l || echo 0"
                     interval: 3600000
                     clickCommand: "kitty -e bash -lc 'checkupdates; echo; read -n1 -s -r -p \"Press any key...\"'"
                 }
                 StatusModule {
-                    theme: root.theme
                     icon: "󰍛"
-                    accent: root.theme.green
+                    accent: Theme.green
                     command: "top -bn1 | awk '/Cpu/ {print int($2+$4)\"%\"}'" 
                     interval: 2500
                 }
                 StatusModule {
-                    theme: root.theme
                     icon: "󰘚"
-                    accent: root.theme.yellow
+                    accent: Theme.yellow
                     command: "free | awk '/Mem:/ {printf \"%d%%\", $3/$2*100}'"
                     interval: 5000
                 }
                 StatusModule {
-                    theme: root.theme
                     icon: "󰋊"
-                    accent: root.theme.secondary
+                    accent: Theme.secondary
                     command: "df -h / | awk 'NR==2 {gsub(/%/,\"\"); print $5\"%\"}'"
                     interval: 60000
                     thresholdColors: true
                 }
-                Battery {
-                    theme: root.theme
-                }
+                Battery { }
                 IconButton {
-                    theme: root.theme
                     icon: "󰅌"
-                    accent: root.theme.primary
+                    accent: Theme.primary
                     command: "quickshell ipc call hypr-rice toggleClipboard"
                 }
                 IconButton {
-                    theme: root.theme
                     icon: "⏻"
-                    accent: root.theme.red
+                    accent: Theme.red
                     command: "quickshell ipc call hypr-rice togglePowerMenu"
                 }
             }

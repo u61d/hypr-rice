@@ -5,7 +5,6 @@ import Quickshell.Services.Notifications
 
 Item {
     id: root
-    required property var theme
 
     // Notification popup column — top-right corner, stacking downward
     ColumnLayout {
@@ -31,9 +30,9 @@ Item {
                 clip: true
 
                 // Glassmorphism
-                color: Qt.rgba(root.theme.base.r, root.theme.base.g, root.theme.base.b, 0.88)
+                color: Qt.rgba(Theme.base.r, Theme.base.g, Theme.base.b, 0.88)
                 border.width: 1
-                border.color: Qt.rgba(root.theme.primary.r, root.theme.primary.g, root.theme.primary.b, 0.45)
+                border.color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.45)
 
                 // Subtle shadow via nested rect
                 Rectangle {
@@ -87,7 +86,7 @@ Item {
                         Layout.preferredHeight: 44
                         Layout.alignment: Qt.AlignTop
                         radius: 22
-                        color: Qt.rgba(root.theme.primary.r, root.theme.primary.g, root.theme.primary.b, 0.15)
+                        color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.15)
 
                         Text {
                             anchors.centerIn: parent
@@ -101,7 +100,7 @@ Item {
                                 if (name.includes("screenshot") || name.includes("grim")) return "󰹑"
                                 return "󰂚"
                             }
-                            color: root.theme.primary
+                            color: Theme.primary
                             font.family: "JetBrainsMono Nerd Font"
                             font.pixelSize: 22
                         }
@@ -114,7 +113,7 @@ Item {
                         // App name label
                         Text {
                             text: modelData.appName || "Notification"
-                            color: Qt.rgba(root.theme.muted.r, root.theme.muted.g, root.theme.muted.b, 0.7)
+                            color: Qt.rgba(Theme.muted.r, Theme.muted.g, Theme.muted.b, 0.7)
                             font.family: "JetBrainsMono Nerd Font"
                             font.pixelSize: 11
                             font.weight: Font.Medium
@@ -123,7 +122,7 @@ Item {
                         // Summary (title)
                         Text {
                             text: modelData.summary || ""
-                            color: root.theme.text
+                            color: Theme.text
                             font.family: "JetBrainsMono Nerd Font"
                             font.bold: true
                             font.pixelSize: 14
@@ -135,7 +134,7 @@ Item {
                         Text {
                             visible: (modelData.body || "").length > 0
                             text: modelData.body || ""
-                            color: root.theme.muted
+                            color: Theme.muted
                             font.family: "JetBrainsMono Nerd Font"
                             font.pixelSize: 13
                             wrapMode: Text.Wrap
@@ -151,7 +150,7 @@ Item {
                         Layout.preferredHeight: 24
                         Layout.alignment: Qt.AlignTop
                         radius: 12
-                        color: closeBtn.containsMouse ? root.theme.red : Qt.rgba(root.theme.surfaceHigh.r, root.theme.surfaceHigh.g, root.theme.surfaceHigh.b, 0.6)
+                        color: closeBtn.containsMouse ? Theme.red : Qt.rgba(Theme.surfaceHigh.r, Theme.surfaceHigh.g, Theme.surfaceHigh.b, 0.6)
                         scale: closeBtn.containsMouse ? 1.15 : 1
 
                         Behavior on color { ColorAnimation { duration: 180 } }
@@ -160,7 +159,7 @@ Item {
                         Text {
                             anchors.centerIn: parent
                             text: "󰅖"
-                            color: closeBtn.containsMouse ? root.theme.base : root.theme.text
+                            color: closeBtn.containsMouse ? Theme.base : Theme.text
                             font.family: "JetBrainsMono Nerd Font"
                             font.pixelSize: 12
                             Behavior on color { ColorAnimation { duration: 180 } }

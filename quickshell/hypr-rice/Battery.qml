@@ -5,7 +5,6 @@ import Quickshell.Services.UPower
 
 Rectangle {
     id: root
-    required property var theme
 
     // UPower.displayDevice provides the aggregate system battery
     property var bat: UPower.displayDevice
@@ -17,7 +16,7 @@ Rectangle {
     implicitWidth: visible ? Math.max(100, row.implicitWidth + 24) : 0
     radius: 11
     
-    color: mouse.containsMouse ? Qt.rgba(theme.primary.r, theme.primary.g, theme.primary.b, 0.18) : "transparent"
+    color: mouse.containsMouse ? Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.18) : "transparent"
     scale: mouse.containsMouse ? 1.04 : 1
 
     Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutCubic } }
@@ -45,7 +44,7 @@ Rectangle {
                 if (p > 10) return "󰁻"
                 return "󰂎"
             }
-            color: bat && bat.percentage < 20 && bat.state !== UPowerDeviceState.Charging ? root.theme.red : root.theme.green
+            color: bat && bat.percentage < 20 && bat.state !== UPowerDeviceState.Charging ? Theme.red : Theme.green
             font.family: "JetBrainsMono Nerd Font"
             font.pixelSize: 15
             font.bold: true
@@ -53,7 +52,7 @@ Rectangle {
 
         Text {
             text: bat ? Math.round(bat.percentage) + "%" : "0%"
-            color: bat && bat.percentage < 20 && bat.state !== UPowerDeviceState.Charging ? root.theme.red : root.theme.text
+            color: bat && bat.percentage < 20 && bat.state !== UPowerDeviceState.Charging ? Theme.red : Theme.text
             font.family: "JetBrainsMono Nerd Font"
             font.pixelSize: 13
             font.bold: true

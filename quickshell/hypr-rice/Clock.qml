@@ -3,12 +3,11 @@ import QtQuick.Layouts
 import Quickshell
 Text {
     id: root
-    required property var theme
     Layout.preferredWidth: 132
     Layout.preferredHeight: 28
     horizontalAlignment: Text.AlignHCenter
     verticalAlignment: Text.AlignVCenter
-    color: theme.text
+    color: Theme.text
     font.family: "JetBrainsMono Nerd Font"
     font.pixelSize: 14
     font.bold: true

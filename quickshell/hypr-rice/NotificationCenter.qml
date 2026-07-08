@@ -7,12 +7,11 @@ import Quickshell.Wayland
 
 PanelWindow {
     id: root
-    required property var theme
     required property ShellScreen modelData
     screen: modelData
 
-    width: 380
-    height: 600
+    implicitWidth: 380
+    implicitHeight: 600
     color: "transparent"
     anchors.top: true
     anchors.right: true
@@ -63,9 +62,9 @@ PanelWindow {
     Rectangle {
         anchors.fill: parent
         radius: 16
-        color: Qt.rgba(theme.base.r, theme.base.g, theme.base.b, 0.95)
+        color: Qt.rgba(Theme.base.r, Theme.base.g, Theme.base.b, 0.95)
         border.width: 1
-        border.color: theme.primary
+        border.color: Theme.primary
 
         ColumnLayout {
             anchors.fill: parent
@@ -76,7 +75,7 @@ PanelWindow {
                 Layout.fillWidth: true
                 Text {
                     text: "󰂚 Notifications"
-                    color: root.theme.primary
+                    color: Theme.primary
                     font.family: "JetBrainsMono Nerd Font"
                     font.pixelSize: 18
                     font.bold: true
@@ -87,11 +86,11 @@ PanelWindow {
                     Layout.preferredWidth: 80
                     Layout.preferredHeight: 28
                     radius: 8
-                    color: root.theme.surfaceHigh
+                    color: Theme.surfaceHigh
                     Text {
                         anchors.centerIn: parent
                         text: "Clear All"
-                        color: root.theme.text
+                        color: Theme.text
                         font.family: "Inter"
                         font.pixelSize: 12
                     }
@@ -109,7 +108,7 @@ PanelWindow {
                     Text {
                         anchors.centerIn: parent
                         text: "󰅖"
-                        color: parent.containsMouse ? root.theme.red : root.theme.text
+                        color: parent.containsMouse ? Theme.red : Theme.text
                         font.family: "JetBrainsMono Nerd Font"
                         font.pixelSize: 16
                     }
@@ -121,12 +120,12 @@ PanelWindow {
             Rectangle {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 1
-                color: Qt.rgba(root.theme.surfaceHigh.r, root.theme.surfaceHigh.g, root.theme.surfaceHigh.b, 0.5)
+                color: Qt.rgba(Theme.surfaceHigh.r, Theme.surfaceHigh.g, Theme.surfaceHigh.b, 0.5)
             }
 
             Text {
                 text: "No new notifications"
-                color: root.theme.muted
+                color: Theme.muted
                 font.family: "Inter"
                 font.pixelSize: 14
                 visible: historyModel.count === 0
@@ -144,7 +143,7 @@ PanelWindow {
                 delegate: Rectangle {
                     width: parent.width
                     height: contentCol.implicitHeight + 24
-                    color: root.theme.surfaceHigh
+                    color: Theme.surfaceHigh
                     radius: 12
 
                     ColumnLayout {
@@ -159,14 +158,14 @@ PanelWindow {
 
                             Text {
                                 text: getIcon(model.iconId)
-                                color: root.theme.primary
+                                color: Theme.primary
                                 font.family: "JetBrainsMono Nerd Font"
                                 font.pixelSize: 14
                             }
 
                             Text {
                                 text: model.appName || "Notification"
-                                color: root.theme.muted
+                                color: Theme.muted
                                 font.family: "Inter"
                                 font.pixelSize: 12
                                 Layout.fillWidth: true
@@ -174,7 +173,7 @@ PanelWindow {
 
                             Text {
                                 text: model.time
-                                color: root.theme.muted
+                                color: Theme.muted
                                 font.family: "Inter"
                                 font.pixelSize: 10
                             }
@@ -186,7 +185,7 @@ PanelWindow {
                                 Text {
                                     anchors.centerIn: parent
                                     text: "󰅖"
-                                    color: root.theme.muted
+                                    color: Theme.muted
                                     font.family: "JetBrainsMono Nerd Font"
                                     font.pixelSize: 12
                                 }
@@ -196,7 +195,7 @@ PanelWindow {
 
                         Text {
                             text: model.summary
-                            color: root.theme.text
+                            color: Theme.text
                             font.family: "Inter"
                             font.pixelSize: 14
                             font.bold: true
@@ -206,7 +205,7 @@ PanelWindow {
 
                         Text {
                             text: model.body
-                            color: root.theme.text
+                            color: Theme.text
                             font.family: "Inter"
                             font.pixelSize: 13
                             Layout.fillWidth: true

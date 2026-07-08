@@ -4,7 +4,6 @@ import Quickshell
 import Quickshell.Services.SystemTray
 RowLayout {
     id: root
-    required property var theme
     required property var panelWindow
     spacing: 2
     visible: SystemTray.items.values.length > 0
@@ -16,7 +15,7 @@ RowLayout {
             Layout.preferredWidth: 28
             Layout.preferredHeight: 28
             radius: 10
-            color: mouse.containsMouse ? Qt.rgba(root.theme.primary.r, root.theme.primary.g, root.theme.primary.b, 0.18) : "transparent"
+            color: mouse.containsMouse ? Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.18) : "transparent"
             scale: mouse.containsMouse ? 1.08 : 1
             Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutCubic } }
             Behavior on scale { NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }

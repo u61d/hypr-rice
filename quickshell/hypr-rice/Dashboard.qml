@@ -7,11 +7,10 @@ import Quickshell.Services.Mpris
 
 Rectangle {
     id: root
-    required property var theme
     required property var win
 
     anchors.fill: parent
-    color: Qt.rgba(theme.base.r, theme.base.g, theme.base.b, 0.72)
+    color: Qt.rgba(Theme.base.r, Theme.base.g, Theme.base.b, 0.72)
 
     // Fade in/out
     opacity: win.visible ? 1 : 0
@@ -37,9 +36,9 @@ Rectangle {
         width: 900
         height: 640
         radius: 24
-        color: Qt.rgba(theme.surface.r, theme.surface.g, theme.surface.b, 0.55)
+        color: Qt.rgba(Theme.surface.r, Theme.surface.g, Theme.surface.b, 0.55)
         border.width: 1
-        border.color: Qt.rgba(theme.primary.r, theme.primary.g, theme.primary.b, 0.25)
+        border.color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.25)
 
         // Entry animation
         scale: win.visible ? 1 : 0.88
@@ -58,9 +57,9 @@ Rectangle {
                 Layout.preferredWidth: 460
                 Layout.preferredHeight: 48
                 radius: 14
-                color: Qt.rgba(root.theme.base.r, root.theme.base.g, root.theme.base.b, 0.85)
+                color: Qt.rgba(Theme.base.r, Theme.base.g, Theme.base.b, 0.85)
                 border.width: searchInput.activeFocus ? 2 : 1
-                border.color: searchInput.activeFocus ? root.theme.primary : Qt.rgba(root.theme.surfaceHigh.r, root.theme.surfaceHigh.g, root.theme.surfaceHigh.b, 0.5)
+                border.color: searchInput.activeFocus ? Theme.primary : Qt.rgba(Theme.surfaceHigh.r, Theme.surfaceHigh.g, Theme.surfaceHigh.b, 0.5)
 
                 Behavior on border.color { ColorAnimation { duration: 200 } }
 
@@ -70,21 +69,21 @@ Rectangle {
                     spacing: 10
                     Text {
                         text: "󰍉"
-                        color: root.theme.muted
+                        color: Theme.muted
                         font.family: "JetBrainsMono Nerd Font"
                         font.pixelSize: 18
                     }
                     TextInput {
                         id: searchInput
                         Layout.fillWidth: true
-                        color: root.theme.text
+                        color: Theme.text
                         font.family: "JetBrainsMono Nerd Font"
                         font.pixelSize: 16
                         clip: true
                         Text {
                             anchors.fill: parent
                             text: "Search apps..."
-                            color: root.theme.muted
+                            color: Theme.muted
                             font: searchInput.font
                             visible: !searchInput.text && !searchInput.activeFocus
                         }
@@ -110,9 +109,9 @@ Rectangle {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     radius: 16
-                    color: Qt.rgba(root.theme.base.r, root.theme.base.g, root.theme.base.b, 0.7)
+                    color: Qt.rgba(Theme.base.r, Theme.base.g, Theme.base.b, 0.7)
                     border.width: 1
-                    border.color: Qt.rgba(root.theme.primary.r, root.theme.primary.g, root.theme.primary.b, 0.2)
+                    border.color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.2)
 
                     property var player: Mpris.players.values.find(p => p.canControl)
 
@@ -126,11 +125,11 @@ Rectangle {
                             Layout.preferredWidth: 70
                             Layout.preferredHeight: 70
                             radius: 12
-                            color: Qt.rgba(root.theme.primary.r, root.theme.primary.g, root.theme.primary.b, 0.12)
+                            color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.12)
                             Text {
                                 anchors.centerIn: parent
                                 text: "󰎈"
-                                color: root.theme.primary
+                                color: Theme.primary
                                 font.family: "JetBrainsMono Nerd Font"
                                 font.pixelSize: 32
                             }
@@ -141,14 +140,14 @@ Rectangle {
                             spacing: 4
                             Text {
                                 text: "NOW PLAYING"
-                                color: root.theme.muted
+                                color: Theme.muted
                                 font.family: "JetBrainsMono Nerd Font"
                                 font.pixelSize: 10
                                 font.weight: Font.Bold
                             }
                             Text {
                                 text: parent.parent.parent.parent.player ? parent.parent.parent.parent.player.trackTitle || "Nothing playing" : "Nothing playing"
-                                color: root.theme.text
+                                color: Theme.text
                                 font.family: "JetBrainsMono Nerd Font"
                                 font.pixelSize: 15
                                 font.bold: true
@@ -157,7 +156,7 @@ Rectangle {
                             }
                             Text {
                                 text: parent.parent.parent.parent.player ? parent.parent.parent.parent.player.trackArtist || "—" : "—"
-                                color: root.theme.muted
+                                color: Theme.muted
                                 font.family: "JetBrainsMono Nerd Font"
                                 font.pixelSize: 13
                                 elide: Text.ElideRight
@@ -172,9 +171,9 @@ Rectangle {
                     Layout.preferredWidth: 130
                     Layout.fillHeight: true
                     radius: 16
-                    color: Qt.rgba(root.theme.base.r, root.theme.base.g, root.theme.base.b, 0.7)
+                    color: Qt.rgba(Theme.base.r, Theme.base.g, Theme.base.b, 0.7)
                     border.width: 1
-                    border.color: Qt.rgba(root.theme.green.r, root.theme.green.g, root.theme.green.b, 0.2)
+                    border.color: Qt.rgba(Theme.green.r, Theme.green.g, Theme.green.b, 0.2)
 
                     property string cpuValue: "0"
 
@@ -183,7 +182,7 @@ Rectangle {
                         spacing: 6
                         Text {
                             text: "CPU"
-                            color: root.theme.muted
+                            color: Theme.muted
                             font.family: "JetBrainsMono Nerd Font"
                             font.pixelSize: 11
                             font.weight: Font.Bold
@@ -191,7 +190,7 @@ Rectangle {
                         }
                         Text {
                             text: parent.parent.cpuValue + "%"
-                            color: root.theme.green
+                            color: Theme.green
                             font.family: "JetBrainsMono Nerd Font"
                             font.pixelSize: 28
                             font.bold: true
@@ -213,9 +212,9 @@ Rectangle {
                     Layout.preferredWidth: 130
                     Layout.fillHeight: true
                     radius: 16
-                    color: Qt.rgba(root.theme.base.r, root.theme.base.g, root.theme.base.b, 0.7)
+                    color: Qt.rgba(Theme.base.r, Theme.base.g, Theme.base.b, 0.7)
                     border.width: 1
-                    border.color: Qt.rgba(root.theme.yellow.r, root.theme.yellow.g, root.theme.yellow.b, 0.2)
+                    border.color: Qt.rgba(Theme.yellow.r, Theme.yellow.g, Theme.yellow.b, 0.2)
 
                     property string ramValue: "0"
 
@@ -224,7 +223,7 @@ Rectangle {
                         spacing: 6
                         Text {
                             text: "RAM"
-                            color: root.theme.muted
+                            color: Theme.muted
                             font.family: "JetBrainsMono Nerd Font"
                             font.pixelSize: 11
                             font.weight: Font.Bold
@@ -232,7 +231,7 @@ Rectangle {
                         }
                         Text {
                             text: parent.parent.ramValue + "%"
-                            color: root.theme.yellow
+                            color: Theme.yellow
                             font.family: "JetBrainsMono Nerd Font"
                             font.pixelSize: 28
                             font.bold: true
@@ -285,7 +284,7 @@ Rectangle {
                         anchors.fill: parent
                         anchors.margins: 6
                         radius: 14
-                        color: appMouse.containsMouse ? Qt.rgba(root.theme.primary.r, root.theme.primary.g, root.theme.primary.b, 0.12) : "transparent"
+                        color: appMouse.containsMouse ? Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.12) : "transparent"
                         scale: appMouse.pressed ? 0.92 : (appMouse.containsMouse ? 1.06 : 1)
 
                         Behavior on color { ColorAnimation { duration: 180 } }
@@ -307,7 +306,7 @@ Rectangle {
 
                             Text {
                                 text: modelData.name
-                                color: root.theme.text
+                                color: Theme.text
                                 font.family: "JetBrainsMono Nerd Font"
                                 font.pixelSize: 12
                                 font.weight: Font.Medium

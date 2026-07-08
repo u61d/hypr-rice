@@ -3,24 +3,22 @@ import QtQuick.Layouts
 
 RowLayout {
     id: root
-    required property var theme
-    required property var hypr
     spacing: 3
 
     Repeater {
         // Dynamically scale up if a workspace > 10 is opened
-        model: Math.max(10, root.hypr.workspaces.reduce((max, w) => Math.max(max, w.id), 0))
+        model: Math.max(10, HyprState.workspaces.reduce((max, w) => Math.max(max, w.id), 0))
 
         Rectangle {
             id: button
             required property int index
             readonly property int workspaceId: index + 1
-            readonly property bool active: root.hypr.activeWorkspace === workspaceId
-            readonly property bool occupied: root.hypr.workspaces.some(workspace => workspace.id === workspaceId && workspace.windows > 0)
+            readonly property bool active: HyprState.activeWorkspace === workspaceId
+            readonly property bool occupied: HyprState.workspaces.some(workspace => workspace.id === workspaceId && workspace.windows > 0)
 
             // Get the list of window classes on this workspace
             readonly property var windowClasses: {
-                const ws = root.hypr.workspaces.find(w => w.id === workspaceId)
+                const ws = HyprState.workspaces.find(w => w.id === workspaceId)
                 return ws && ws.windowClasses ? ws.windowClasses : []
             }
 
@@ -29,9 +27,9 @@ RowLayout {
             Layout.preferredHeight: 26
             radius: 10
             
-            color: active ? root.theme.primary : (occupied ? Qt.rgba(root.theme.secondary.r, root.theme.secondary.g, root.theme.secondary.b, 0.18) : "transparent")
+            color: active ? Theme.primary : (occupied ? Qt.rgba(Theme.secondary.r, Theme.secondary.g, Theme.secondary.b, 0.18) : "transparent")
             border.width: occupied && !active ? 1 : 0
-            border.color: Qt.rgba(root.theme.secondary.r, root.theme.secondary.g, root.theme.secondary.b, 0.35)
+            border.color: Qt.rgba(Theme.secondary.r, Theme.secondary.g, Theme.secondary.b, 0.35)
             scale: mouse.containsMouse ? 1.08 : 1
 
             Behavior on implicitWidth { NumberAnimation { duration: 320; easing.type: Easing.OutBack } }
@@ -41,7 +39,7 @@ RowLayout {
             Text {
                 anchors.centerIn: parent
                 text: button.active ? "󰮯" : (button.occupied ? "󰺵" : "·")
-                color: button.active ? root.theme.mantle : root.theme.text
+                color: button.active ? Theme.mantle : Theme.text
                 font.family: "JetBrainsMono Nerd Font"
                 font.pixelSize: button.active ? 15 : 14
                 font.bold: true
@@ -57,9 +55,9 @@ RowLayout {
                 width: tooltipContent.implicitWidth + 20
                 height: tooltipContent.implicitHeight + 14
                 radius: 10
-                color: Qt.rgba(root.theme.base.r, root.theme.base.g, root.theme.base.b, 0.92)
+                color: Qt.rgba(Theme.base.r, Theme.base.g, Theme.base.b, 0.92)
                 border.width: 1
-                border.color: Qt.rgba(root.theme.primary.r, root.theme.primary.g, root.theme.primary.b, 0.3)
+                border.color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.3)
                 z: 100
 
                 opacity: visible ? 1 : 0
@@ -81,7 +79,7 @@ RowLayout {
                             Layout.preferredWidth: 28
                             Layout.preferredHeight: 28
                             radius: 7
-                            color: Qt.rgba(root.theme.surface.r, root.theme.surface.g, root.theme.surface.b, 0.8)
+                            color: Qt.rgba(Theme.surface.r, Theme.surface.g, Theme.surface.b, 0.8)
 
                             Text {
                                 anchors.centerIn: parent
@@ -101,7 +99,7 @@ RowLayout {
                                     if (cls.includes("blender")) return "󰂫"
                                     return "󰣆"
                                 }
-                                color: root.theme.primary
+                                color: Theme.primary
                                 font.family: "JetBrainsMono Nerd Font"
                                 font.pixelSize: 14
                             }
@@ -115,12 +113,12 @@ RowLayout {
                 anchors.fill: parent
                 hoverEnabled: true
                 cursorShape: Qt.PointingHandCursor
-                onClicked: root.hypr.dispatch("workspace " + button.workspaceId)
+                onClicked: HyprState.dispatch("workspace " + button.workspaceId)
                 onWheel: (wheel) => {
                     if (wheel.angleDelta.y > 0) {
-                        root.hypr.dispatch("workspace e-1")
+                        HyprState.dispatch("workspace e-1")
                     } else if (wheel.angleDelta.y < 0) {
-                        root.hypr.dispatch("workspace e+1")
+                        HyprState.dispatch("workspace e+1")
                     }
                 }
             }

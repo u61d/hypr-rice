@@ -6,12 +6,11 @@ import Quickshell.Wayland
 
 PanelWindow {
     id: root
-    required property var theme
     required property ShellScreen modelData
     screen: modelData
 
-    width: 320
-    height: 120
+    implicitWidth: 320
+    implicitHeight: 120
     color: "transparent"
     anchors.top: true
     anchors.right: true
@@ -30,9 +29,9 @@ PanelWindow {
     Rectangle {
         anchors.fill: parent
         radius: 12
-        color: Qt.rgba(theme.base.r, theme.base.g, theme.base.b, 0.9)
+        color: Qt.rgba(Theme.base.r, Theme.base.g, Theme.base.b, 0.9)
         border.width: 1
-        border.color: theme.primary
+        border.color: Theme.primary
 
         RowLayout {
             anchors.fill: parent
@@ -46,17 +45,6 @@ PanelWindow {
                 fillMode: Image.PreserveAspectCrop
                 asynchronous: true
                 cache: false
-                layer.enabled: true
-                layer.effect: ShaderEffect {
-                    fragmentShader: "
-                        varying highp vec2 qt_TexCoord0;
-                        uniform sampler2D source;
-                        uniform lowp float qt_Opacity;
-                        void main() {
-                            gl_FragColor = texture2D(source, qt_TexCoord0) * qt_Opacity;
-                        }
-                    "
-                }
             }
 
             ColumnLayout {
@@ -65,7 +53,7 @@ PanelWindow {
 
                 Text {
                     text: "Screenshot Saved"
-                    color: root.theme.text
+                    color: Theme.text
                     font.family: "Inter"
                     font.pixelSize: 14
                     font.bold: true
@@ -74,7 +62,7 @@ PanelWindow {
 
                 Text {
                     text: root.imagePath.split("/").pop()
-                    color: root.theme.muted
+                    color: Theme.muted
                     font.family: "Inter"
                     font.pixelSize: 11
                     Layout.fillWidth: true
@@ -91,11 +79,11 @@ PanelWindow {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 30
                         radius: 6
-                        color: root.theme.surfaceHigh
+                        color: Theme.surfaceHigh
                         Text {
                             anchors.centerIn: parent
                             text: "Copy"
-                            color: root.theme.text
+                            color: Theme.text
                             font.pixelSize: 12
                         }
                         MouseArea {
@@ -111,11 +99,11 @@ PanelWindow {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 30
                         radius: 6
-                        color: root.theme.surfaceHigh
+                        color: Theme.surfaceHigh
                         Text {
                             anchors.centerIn: parent
                             text: "Close"
-                            color: root.theme.text
+                            color: Theme.text
                             font.pixelSize: 12
                         }
                         MouseArea {

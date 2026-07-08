@@ -5,7 +5,6 @@ import Quickshell.Wayland
 
 PanelWindow {
     id: root
-    required property var theme
     required property ShellScreen modelData
     screen: modelData
     color: "transparent"
@@ -21,11 +20,6 @@ PanelWindow {
 
     property int currentMonthOffset: 0
 
-    readonly property color cBase: root.theme ? root.theme.base : "#1e1e2e"
-    readonly property color cPrimary: root.theme ? root.theme.primary : "#cba6f7"
-    readonly property color cText: root.theme ? root.theme.text : "#cdd6f4"
-    readonly property color cMuted: root.theme ? root.theme.muted : "#9399b2"
-    readonly property color cSurfaceHigh: root.theme ? root.theme.surfaceHigh : "#45475a"
 
     SystemClock { id: sysClock }
 
@@ -70,9 +64,9 @@ PanelWindow {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.topMargin: 50
         radius: 16
-        color: Qt.rgba(root.cBase.r, root.cBase.g, root.cBase.b, 0.95)
+        color: Qt.rgba(Theme.base.r, Theme.base.g, Theme.base.b, 0.95)
         border.width: 1
-        border.color: root.cPrimary
+        border.color: Theme.primary
 
         ColumnLayout {
             anchors.fill: parent
@@ -90,7 +84,7 @@ PanelWindow {
                     Text {
                         anchors.centerIn: parent
                         text: ""
-                        color: parent.containsMouse ? root.cPrimary : root.cText
+                        color: parent.containsMouse ? Theme.primary : Theme.text
                         font.family: "JetBrainsMono Nerd Font"
                     }
                     onClicked: root.currentMonthOffset--
@@ -103,7 +97,7 @@ PanelWindow {
                         return d
                     }
                     text: Qt.formatDateTime(displayedDate, "MMMM yyyy")
-                    color: root.cPrimary
+                    color: Theme.primary
                     font.family: "Inter"
                     font.pixelSize: 16
                     font.bold: true
@@ -119,7 +113,7 @@ PanelWindow {
                     Text {
                         anchors.centerIn: parent
                         text: ""
-                        color: parent.containsMouse ? root.cPrimary : root.cText
+                        color: parent.containsMouse ? Theme.primary : Theme.text
                         font.family: "JetBrainsMono Nerd Font"
                     }
                     onClicked: root.currentMonthOffset++
@@ -129,7 +123,7 @@ PanelWindow {
             Rectangle {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 1
-                color: root.cSurfaceHigh
+                color: Theme.surfaceHigh
             }
 
             RowLayout {
@@ -139,7 +133,7 @@ PanelWindow {
                     delegate: Text {
                         required property string modelData
                         text: modelData
-                        color: root.cMuted
+                        color: Theme.muted
                         font.family: "Inter"
                         font.pixelSize: 12
                         font.bold: true
@@ -164,13 +158,13 @@ PanelWindow {
                         Layout.fillWidth: true
                         Layout.preferredHeight: width
                         radius: width / 2
-                        color: isToday ? root.cPrimary
-                            : (dayMouse.containsMouse && dayText !== "" ? root.cSurfaceHigh : "transparent")
+                        color: isToday ? Theme.primary
+                            : (dayMouse.containsMouse && dayText !== "" ? Theme.surfaceHigh : "transparent")
 
                         Text {
                             anchors.centerIn: parent
                             text: parent.dayText
-                            color: parent.isToday ? root.cBase : root.cText
+                            color: parent.isToday ? Theme.base : Theme.text
                             font.family: "Inter"
                             font.pixelSize: 13
                             font.bold: parent.isToday

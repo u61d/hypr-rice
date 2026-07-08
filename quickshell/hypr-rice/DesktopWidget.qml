@@ -5,7 +5,6 @@ import Quickshell.Io
 
 Item {
     id: root
-    required property var theme
 
     anchors.fill: parent
 
@@ -18,7 +17,7 @@ Item {
             id: clockText
             Layout.alignment: Qt.AlignHCenter
             text: Qt.formatTime(new Date(), "hh:mm")
-            color: Qt.rgba(root.theme.text.r, root.theme.text.g, root.theme.text.b, 0.25)
+            color: Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.25)
             font.family: "JetBrainsMono Nerd Font"
             font.pixelSize: 200
             font.weight: Font.Black
@@ -30,7 +29,7 @@ Item {
             Layout.alignment: Qt.AlignHCenter
             Layout.topMargin: -20
             text: Qt.formatDate(new Date(), "dddd, MMMM d")
-            color: Qt.rgba(root.theme.text.r, root.theme.text.g, root.theme.text.b, 0.15)
+            color: Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.15)
             font.family: "JetBrainsMono Nerd Font"
             font.pixelSize: 22
             font.weight: Font.Medium
@@ -47,14 +46,13 @@ Item {
                 if (h < 18) return "Good Afternoon  󰖨"
                 return "Good Evening  󰖔"
             }
-            color: Qt.rgba(root.theme.primary.r, root.theme.primary.g, root.theme.primary.b, 0.50)
+            color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.50)
             font.family: "JetBrainsMono Nerd Font"
             font.pixelSize: 20
             font.weight: Font.Bold
         }
 
         Weather {
-            theme: root.theme
             Layout.alignment: Qt.AlignHCenter
             Layout.topMargin: 32
         }
@@ -76,7 +74,7 @@ Item {
                 width: 12
                 height: Math.max(3, (bgCava.values[index] || 0) * 1.8)
                 anchors.bottom: parent.bottom
-                color: Qt.rgba(root.theme.primary.r, root.theme.primary.g, root.theme.primary.b, 0.12)
+                color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.12)
                 radius: 6
 
                 Behavior on height {

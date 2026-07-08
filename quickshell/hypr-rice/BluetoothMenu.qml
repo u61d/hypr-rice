@@ -5,16 +5,15 @@ import Quickshell.Io
 
 Rectangle {
     id: root
-    required property var theme
     property bool expanded: false
 
     implicitWidth: expanded ? 260 : 0
     implicitHeight: expanded ? Math.min(320, btList.contentHeight + header.height + 28) : 0
     radius: 16
     clip: true
-    color: Qt.rgba(theme.base.r, theme.base.g, theme.base.b, 0.92)
+    color: Qt.rgba(Theme.base.r, Theme.base.g, Theme.base.b, 0.92)
     border.width: 1
-    border.color: Qt.rgba(theme.secondary.r, theme.secondary.g, theme.secondary.b, 0.3)
+    border.color: Qt.rgba(Theme.secondary.r, Theme.secondary.g, Theme.secondary.b, 0.3)
 
     opacity: expanded ? 1 : 0
     visible: opacity > 0
@@ -35,7 +34,7 @@ Rectangle {
             spacing: 8
             Text {
                 text: "󰂯  Bluetooth"
-                color: root.theme.text
+                color: Theme.text
                 font.family: "JetBrainsMono Nerd Font"
                 font.pixelSize: 15
                 font.bold: true
@@ -45,12 +44,12 @@ Rectangle {
                 Layout.preferredWidth: 40
                 Layout.preferredHeight: 22
                 radius: 11
-                color: root.theme.secondary
+                color: Theme.secondary
 
                 Text {
                     anchors.centerIn: parent
                     text: "ON"
-                    color: root.theme.base
+                    color: Theme.base
                     font.family: "JetBrainsMono Nerd Font"
                     font.pixelSize: 10
                     font.bold: true
@@ -61,7 +60,7 @@ Rectangle {
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 1
-            color: Qt.rgba(root.theme.surfaceHigh.r, root.theme.surfaceHigh.g, root.theme.surfaceHigh.b, 0.4)
+            color: Qt.rgba(Theme.surfaceHigh.r, Theme.surfaceHigh.g, Theme.surfaceHigh.b, 0.4)
         }
 
         ListView {
@@ -78,7 +77,7 @@ Rectangle {
                 width: ListView.view.width
                 height: 42
                 radius: 10
-                color: btMouse.containsMouse ? Qt.rgba(root.theme.surfaceHigh.r, root.theme.surfaceHigh.g, root.theme.surfaceHigh.b, 0.4) : "transparent"
+                color: btMouse.containsMouse ? Qt.rgba(Theme.surfaceHigh.r, Theme.surfaceHigh.g, Theme.surfaceHigh.b, 0.4) : "transparent"
 
                 Behavior on color { ColorAnimation { duration: 150 } }
 
@@ -89,14 +88,14 @@ Rectangle {
 
                     Text {
                         text: modelData.connected === "yes" ? "󰂱" : "󰂯"
-                        color: modelData.connected === "yes" ? root.theme.secondary : root.theme.muted
+                        color: modelData.connected === "yes" ? Theme.secondary : Theme.muted
                         font.family: "JetBrainsMono Nerd Font"
                         font.pixelSize: 16
                     }
 
                     Text {
                         text: modelData.name || modelData.address
-                        color: root.theme.text
+                        color: Theme.text
                         font.family: "JetBrainsMono Nerd Font"
                         font.pixelSize: 13
                         font.bold: modelData.connected === "yes"
@@ -107,7 +106,7 @@ Rectangle {
                     Text {
                         visible: modelData.connected === "yes"
                         text: "Connected"
-                        color: root.theme.secondary
+                        color: Theme.secondary
                         font.family: "JetBrainsMono Nerd Font"
                         font.pixelSize: 10
                     }
