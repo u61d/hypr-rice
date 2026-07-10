@@ -24,7 +24,7 @@ Rectangle {
         else root.accent = Theme.green
     }
 
-    implicitWidth: Math.max(58, label.implicitWidth + 18)
+    implicitWidth: Math.max(58, row.implicitWidth + 18)
     Layout.preferredHeight: 28
     radius: 11
     
@@ -35,15 +35,24 @@ Rectangle {
     Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutCubic } }
     Behavior on scale { NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
 
-    Text {
-        id: label
+    RowLayout {
+        id: row
         anchors.centerIn: parent
-        text: root.icon + " " + root.value
-        color: root.accent
-        font {
-            family: "JetBrainsMono Nerd Font"
-            pixelSize: 13
-            bold: true
+        spacing: 6
+
+        Text {
+            text: root.icon
+            color: root.accent
+            font.family: Fonts.icon
+            font.pixelSize: 16
+        }
+
+        Text {
+            text: root.value
+            color: root.accent
+            font.family: Fonts.sans
+            font.pixelSize: 13
+            font.weight: Font.Medium
         }
     }
 

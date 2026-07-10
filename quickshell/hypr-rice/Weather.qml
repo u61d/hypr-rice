@@ -15,7 +15,7 @@ Rectangle {
 
     property string temp: "--"
     property string conditionText: "Loading..."
-    property string conditionIcon: "󰖐"
+    property string conditionIcon: "\uf15c" // wb_cloudy
 
     function updateWeather() {
         if (!weatherProc.running) weatherProc.running = true
@@ -34,12 +34,12 @@ Rectangle {
                     root.conditionText = parts[1]
 
                     let c = parts[1].toLowerCase()
-                    if (c.includes("clear") || c.includes("sunny")) root.conditionIcon = "󰖙"
-                    else if (c.includes("cloud") || c.includes("overcast")) root.conditionIcon = "󰖐"
-                    else if (c.includes("rain") || c.includes("drizzle")) root.conditionIcon = "󰖗"
-                    else if (c.includes("snow") || c.includes("ice")) root.conditionIcon = "󰖘"
-                    else if (c.includes("thunder") || c.includes("storm")) root.conditionIcon = "󰙾"
-                    else root.conditionIcon = "󰖐"
+                    if (c.includes("clear") || c.includes("sunny")) root.conditionIcon = "\ue81a" // sunny
+                    else if (c.includes("cloud") || c.includes("overcast")) root.conditionIcon = "\uf15c" // wb_cloudy
+                    else if (c.includes("rain") || c.includes("drizzle")) root.conditionIcon = "\uf176" // rainy
+                    else if (c.includes("snow") || c.includes("ice")) root.conditionIcon = "\ueb3b" // ac_unit
+                    else if (c.includes("thunder") || c.includes("storm")) root.conditionIcon = "\uebdb" // thunderstorm
+                    else root.conditionIcon = "\uf15c" // wb_cloudy
                 }
             }
         }
@@ -62,8 +62,8 @@ Rectangle {
         Text {
             text: root.conditionIcon
             color: Theme.primary
-            font.family: "JetBrainsMono Nerd Font"
-            font.pixelSize: 42
+            font.family: Fonts.icon
+            font.pixelSize: 36
             Layout.alignment: Qt.AlignVCenter
         }
 
@@ -74,15 +74,15 @@ Rectangle {
             Text {
                 text: root.temp
                 color: Theme.text
-                font.family: "Inter"
+                font.family: Fonts.sans
                 font.pixelSize: 24
-                font.bold: true
+                font.weight: Font.DemiBold
             }
 
             Text {
                 text: root.conditionText
                 color: Theme.muted
-                font.family: "Inter"
+                font.family: Fonts.sans
                 font.pixelSize: 13
                 elide: Text.ElideRight
                 Layout.fillWidth: true

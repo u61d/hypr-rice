@@ -8,9 +8,9 @@ Text {
     horizontalAlignment: Text.AlignHCenter
     verticalAlignment: Text.AlignVCenter
     color: Theme.text
-    font.family: "JetBrainsMono Nerd Font"
-    font.pixelSize: 14
-    font.bold: true
+    font.family: Fonts.sans
+    font.pixelSize: 13
+    font.weight: Font.DemiBold
     text: Qt.formatDateTime(clock.date, "HH:mm   ddd dd MMM")
     SystemClock {
         id: clock

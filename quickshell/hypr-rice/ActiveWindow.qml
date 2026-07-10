@@ -13,8 +13,8 @@ Item {
         elide: Text.ElideRight
         text: HyprState.activeTitle.length > 0 ? HyprState.activeTitle : "Desktop"
         color: Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.90)
-        font.family: "JetBrainsMono Nerd Font"
+        font.family: Fonts.sans
         font.pixelSize: 13
-        font.bold: true
+        font.weight: Font.Medium
     }
 }

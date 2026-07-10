@@ -54,16 +54,16 @@ PanelWindow {
                 Text {
                     text: "Screenshot Saved"
                     color: Theme.text
-                    font.family: "Inter"
+                    font.family: Fonts.sans
                     font.pixelSize: 14
-                    font.bold: true
+                    font.weight: Font.DemiBold
                     Layout.alignment: Qt.AlignTop
                 }
 
                 Text {
                     text: root.imagePath.split("/").pop()
                     color: Theme.muted
-                    font.family: "Inter"
+                    font.family: Fonts.sans
                     font.pixelSize: 11
                     Layout.fillWidth: true
                     elide: Text.ElideRight
@@ -84,6 +84,7 @@ PanelWindow {
                             anchors.centerIn: parent
                             text: "Copy"
                             color: Theme.text
+                            font.family: Fonts.sans
                             font.pixelSize: 12
                         }
                         MouseArea {
@@ -104,6 +105,7 @@ PanelWindow {
                             anchors.centerIn: parent
                             text: "Close"
                             color: Theme.text
+                            font.family: Fonts.sans
                             font.pixelSize: 12
                         }
                         MouseArea {

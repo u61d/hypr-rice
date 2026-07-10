@@ -68,16 +68,16 @@ Rectangle {
                     anchors.margins: 12
                     spacing: 10
                     Text {
-                        text: "󰍉"
+                        text: "\ue8b6" // search
                         color: Theme.muted
-                        font.family: "JetBrainsMono Nerd Font"
+                        font.family: Fonts.icon
                         font.pixelSize: 18
                     }
                     TextInput {
                         id: searchInput
                         Layout.fillWidth: true
                         color: Theme.text
-                        font.family: "JetBrainsMono Nerd Font"
+                        font.family: Fonts.sans
                         font.pixelSize: 16
                         clip: true
                         Text {
@@ -128,10 +128,10 @@ Rectangle {
                             color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.12)
                             Text {
                                 anchors.centerIn: parent
-                                text: "󰎈"
+                                text: "\ue405" // music_note
                                 color: Theme.primary
-                                font.family: "JetBrainsMono Nerd Font"
-                                font.pixelSize: 32
+                                font.family: Fonts.icon
+                                font.pixelSize: 30
                             }
                         }
 
@@ -141,23 +141,23 @@ Rectangle {
                             Text {
                                 text: "NOW PLAYING"
                                 color: Theme.muted
-                                font.family: "JetBrainsMono Nerd Font"
+                                font.family: Fonts.sans
                                 font.pixelSize: 10
                                 font.weight: Font.Bold
                             }
                             Text {
                                 text: parent.parent.parent.parent.player ? parent.parent.parent.parent.player.trackTitle || "Nothing playing" : "Nothing playing"
                                 color: Theme.text
-                                font.family: "JetBrainsMono Nerd Font"
+                                font.family: Fonts.sans
                                 font.pixelSize: 15
-                                font.bold: true
+                                font.weight: Font.DemiBold
                                 elide: Text.ElideRight
                                 Layout.fillWidth: true
                             }
                             Text {
                                 text: parent.parent.parent.parent.player ? parent.parent.parent.parent.player.trackArtist || "—" : "—"
                                 color: Theme.muted
-                                font.family: "JetBrainsMono Nerd Font"
+                                font.family: Fonts.sans
                                 font.pixelSize: 13
                                 elide: Text.ElideRight
                                 Layout.fillWidth: true
@@ -183,7 +183,7 @@ Rectangle {
                         Text {
                             text: "CPU"
                             color: Theme.muted
-                            font.family: "JetBrainsMono Nerd Font"
+                            font.family: Fonts.sans
                             font.pixelSize: 11
                             font.weight: Font.Bold
                             Layout.alignment: Qt.AlignHCenter
@@ -191,9 +191,9 @@ Rectangle {
                         Text {
                             text: parent.parent.cpuValue + "%"
                             color: Theme.green
-                            font.family: "JetBrainsMono Nerd Font"
-                            font.pixelSize: 28
-                            font.bold: true
+                            font.family: Fonts.sans
+                            font.pixelSize: 26
+                            font.weight: Font.DemiBold
                             Layout.alignment: Qt.AlignHCenter
                         }
                     }
@@ -224,7 +224,7 @@ Rectangle {
                         Text {
                             text: "RAM"
                             color: Theme.muted
-                            font.family: "JetBrainsMono Nerd Font"
+                            font.family: Fonts.sans
                             font.pixelSize: 11
                             font.weight: Font.Bold
                             Layout.alignment: Qt.AlignHCenter
@@ -232,9 +232,9 @@ Rectangle {
                         Text {
                             text: parent.parent.ramValue + "%"
                             color: Theme.yellow
-                            font.family: "JetBrainsMono Nerd Font"
-                            font.pixelSize: 28
-                            font.bold: true
+                            font.family: Fonts.sans
+                            font.pixelSize: 26
+                            font.weight: Font.DemiBold
                             Layout.alignment: Qt.AlignHCenter
                         }
                     }
@@ -307,7 +307,7 @@ Rectangle {
                             Text {
                                 text: modelData.name
                                 color: Theme.text
-                                font.family: "JetBrainsMono Nerd Font"
+                                font.family: Fonts.sans
                                 font.pixelSize: 12
                                 font.weight: Font.Medium
                                 elide: Text.ElideRight

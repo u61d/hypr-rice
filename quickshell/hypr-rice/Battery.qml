@@ -30,32 +30,31 @@ Rectangle {
         Text {
             // Icon logic based on state and percentage
             text: {
-                if (!bat) return "󰂎"
-                if (bat.state === UPowerDeviceState.Charging) return "󰂄"
+                if (!bat) return "\ue1a6" // battery_unknown
+                if (bat.state === UPowerDeviceState.Charging) return "\ue1a3" // battery_charging_full
                 const p = bat.percentage
-                if (p > 90) return "󰁹"
-                if (p > 80) return "󰂂"
-                if (p > 70) return "󰂁"
-                if (p > 60) return "󰂀"
-                if (p > 50) return "󰁿"
-                if (p > 40) return "󰁾"
-                if (p > 30) return "󰁽"
-                if (p > 20) return "󰁼"
-                if (p > 10) return "󰁻"
-                return "󰂎"
+                if (p > 90) return "\ue1a5" // battery_full
+                if (p > 80) return "\uf0a1" // battery_6_bar
+                if (p > 70) return "\uf0a0" // battery_5_bar
+                if (p > 60) return "\uf09f" // battery_4_bar
+                if (p > 50) return "\uf09f" // battery_4_bar
+                if (p > 40) return "\uf09e" // battery_3_bar
+                if (p > 30) return "\uf09d" // battery_2_bar
+                if (p > 20) return "\uf09c" // battery_1_bar
+                if (p > 10) return "\uebdc" // battery_0_bar
+                return "\ue19c" // battery_alert
             }
             color: bat && bat.percentage < 20 && bat.state !== UPowerDeviceState.Charging ? Theme.red : Theme.green
-            font.family: "JetBrainsMono Nerd Font"
-            font.pixelSize: 15
-            font.bold: true
+            font.family: Fonts.icon
+            font.pixelSize: 18
         }
 
         Text {
             text: bat ? Math.round(bat.percentage) + "%" : "0%"
             color: bat && bat.percentage < 20 && bat.state !== UPowerDeviceState.Charging ? Theme.red : Theme.text
-            font.family: "JetBrainsMono Nerd Font"
+            font.family: Fonts.sans
             font.pixelSize: 13
-            font.bold: true
+            font.weight: Font.Medium
         }
     }
 

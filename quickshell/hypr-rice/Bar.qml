@@ -15,7 +15,9 @@ Item {
         Pill {
             Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
             RowLayout {
-                anchors.centerIn: parent
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left: parent.left
+                anchors.leftMargin: 9
                 spacing: 4
                 Workspaces {
                 }
@@ -30,7 +32,9 @@ Item {
         Pill {
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
             RowLayout {
-                anchors.centerIn: parent
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left: parent.left
+                anchors.leftMargin: 9
                 spacing: 10
                 Mpris {}
                 Cava {}
@@ -43,13 +47,15 @@ Item {
         Pill {
             Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
             RowLayout {
-                anchors.centerIn: parent
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left: parent.left
+                anchors.leftMargin: 9
                 spacing: 4
                 Tray {
                     panelWindow: root.panelWindow
                 }
                 StatusModule {
-                    icon: "󰕾"
+                    icon: ""
                     command: "wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{printf \"%d%%\", $2 * 100}'"
                     interval: 1500
                     clickCommand: "pavucontrol"
@@ -62,7 +68,7 @@ Item {
                     
                 IconButton {
                     id: wifiIcon
-                    icon: "󰤭"
+                    icon: ""
                     property string command: ""
                     onClicked: networkMenu.expanded = !networkMenu.expanded
 
@@ -79,11 +85,11 @@ Item {
                         stdout: StdioCollector {
                             onStreamFinished: {
                                 const sig = parseInt(text.trim())
-                                if (isNaN(sig)) wifiIcon.icon = "󰤭"
-                                else if (sig < 30) wifiIcon.icon = "󰤟"
-                                else if (sig < 60) wifiIcon.icon = "󰤢"
-                                else if (sig < 80) wifiIcon.icon = "󰤥"
-                                else wifiIcon.icon = "󰤨"
+                                if (isNaN(sig)) wifiIcon.icon = ""
+                                else if (sig < 30) wifiIcon.icon = ""
+                                else if (sig < 60) wifiIcon.icon = ""
+                                else if (sig < 80) wifiIcon.icon = ""
+                                else wifiIcon.icon = ""
                             }
                         }
                     }
@@ -106,7 +112,7 @@ Item {
                     
                     IconButton {
                         id: btIcon
-                        icon: "󰂯"
+                        icon: ""
                         property string command: ""
                         onClicked: bluetoothMenu.expanded = !bluetoothMenu.expanded
                     }
@@ -120,13 +126,13 @@ Item {
                 }
 
                 IconButton {
-                    icon: globalState.dndEnabled ? "󰂛" : "󰂚"
+                    icon: globalState.dndEnabled ? "" : ""
                     accent: globalState.dndEnabled ? Theme.muted : Theme.primary
                     command: "quickshell ipc call hypr-rice toggleDnd"
                 }
 
                 IconButton {
-                    icon: "󰂚"
+                    icon: ""
                     accent: Theme.primary
                     command: "quickshell ipc call hypr-rice toggleNotificationCenter"
                 }
@@ -138,7 +144,7 @@ Item {
                     
                     IconButton {
                         id: brightnessIcon
-                        icon: "󰃠"
+                        icon: ""
                         property string command: ""
                         onClicked: brightnessMenu.expanded = !brightnessMenu.expanded
                     }
@@ -152,26 +158,26 @@ Item {
                 }
 
                 StatusModule {
-                    icon: "󰚰"
+                    icon: ""
                     accent: Theme.yellow
                     command: "checkupdates 2>/dev/null | wc -l || echo 0"
                     interval: 3600000
                     clickCommand: "kitty -e bash -lc 'checkupdates; echo; read -n1 -s -r -p \"Press any key...\"'"
                 }
                 StatusModule {
-                    icon: "󰍛"
+                    icon: ""
                     accent: Theme.green
                     command: "top -bn1 | awk '/Cpu/ {print int($2+$4)\"%\"}'" 
                     interval: 2500
                 }
                 StatusModule {
-                    icon: "󰘚"
+                    icon: ""
                     accent: Theme.yellow
                     command: "free | awk '/Mem:/ {printf \"%d%%\", $3/$2*100}'"
                     interval: 5000
                 }
                 StatusModule {
-                    icon: "󰋊"
+                    icon: ""
                     accent: Theme.secondary
                     command: "df -h / | awk 'NR==2 {gsub(/%/,\"\"); print $5\"%\"}'"
                     interval: 60000
@@ -179,12 +185,12 @@ Item {
                 }
                 Battery { }
                 IconButton {
-                    icon: "󰅌"
+                    icon: ""
                     accent: Theme.primary
                     command: "quickshell ipc call hypr-rice toggleClipboard"
                 }
                 IconButton {
-                    icon: "⏻"
+                    icon: ""
                     accent: Theme.red
                     command: "quickshell ipc call hypr-rice togglePowerMenu"
                 }

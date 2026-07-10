@@ -36,11 +36,17 @@ Rectangle {
             Layout.fillWidth: true
             spacing: 8
             Text {
-                text: "󰤨  Wi-Fi"
+                text: "\ue63e" // wifi
+                color: Theme.primary
+                font.family: Fonts.icon
+                font.pixelSize: 17
+            }
+            Text {
+                text: "Wi-Fi"
                 color: Theme.text
-                font.family: "JetBrainsMono Nerd Font"
+                font.family: Fonts.sans
                 font.pixelSize: 15
-                font.bold: true
+                font.weight: Font.DemiBold
             }
             Item { Layout.fillWidth: true }
             Rectangle {
@@ -53,9 +59,9 @@ Rectangle {
                     anchors.centerIn: parent
                     text: "ON"
                     color: Theme.base
-                    font.family: "JetBrainsMono Nerd Font"
+                    font.family: Fonts.sans
                     font.pixelSize: 10
-                    font.bold: true
+                    font.weight: Font.Bold
                 }
             }
         }
@@ -93,13 +99,13 @@ Rectangle {
                     Text {
                         text: {
                             const sig = parseInt(modelData.signal || 0)
-                            if (sig > 75) return "󰤨"
-                            if (sig > 50) return "󰤥"
-                            if (sig > 25) return "󰤢"
-                            return "󰤟"
+                            if (sig > 75) return "\ue63e" // wifi
+                            if (sig > 50) return "\uebe1" // network_wifi_3_bar
+                            if (sig > 25) return "\uebd6" // network_wifi_2_bar
+                            return "\uebe4" // network_wifi_1_bar
                         }
                         color: modelData.active === "yes" ? Theme.green : Theme.muted
-                        font.family: "JetBrainsMono Nerd Font"
+                        font.family: Fonts.icon
                         font.pixelSize: 16
                     }
                     ColumnLayout {
@@ -108,9 +114,9 @@ Rectangle {
                         Text {
                             text: modelData.ssid || "Hidden"
                             color: Theme.text
-                            font.family: "JetBrainsMono Nerd Font"
+                            font.family: Fonts.sans
                             font.pixelSize: 13
-                            font.bold: modelData.active === "yes"
+                            font.weight: modelData.active === "yes" ? Font.DemiBold : Font.Normal
                             elide: Text.ElideRight
                             Layout.fillWidth: true
                         }
@@ -118,14 +124,14 @@ Rectangle {
                             visible: modelData.active === "yes"
                             text: "Connected"
                             color: Theme.green
-                            font.family: "JetBrainsMono Nerd Font"
+                            font.family: Fonts.sans
                             font.pixelSize: 10
                         }
                     }
                     Text {
                         text: (modelData.signal || "0") + "%"
                         color: Theme.muted
-                        font.family: "JetBrainsMono Nerd Font"
+                        font.family: Fonts.sans
                         font.pixelSize: 11
                     }
                 }
@@ -137,7 +143,7 @@ Rectangle {
                     cursorShape: Qt.PointingHandCursor
                     onClicked: {
                         if (modelData.active !== "yes") {
-                            Quickshell.exec("nmcli dev wifi connect '" + modelData.ssid + "'")
+                            Quickshell.execDetached(["nmcli", "dev", "wifi", "connect", modelData.ssid])
                         }
                     }
                 }

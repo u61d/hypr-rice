@@ -33,11 +33,17 @@ Rectangle {
             Layout.fillWidth: true
             spacing: 8
             Text {
-                text: "󰂯  Bluetooth"
+                text: "\ue1a7" // bluetooth
+                color: Theme.secondary
+                font.family: Fonts.icon
+                font.pixelSize: 17
+            }
+            Text {
+                text: "Bluetooth"
                 color: Theme.text
-                font.family: "JetBrainsMono Nerd Font"
+                font.family: Fonts.sans
                 font.pixelSize: 15
-                font.bold: true
+                font.weight: Font.DemiBold
             }
             Item { Layout.fillWidth: true }
             Rectangle {
@@ -50,9 +56,9 @@ Rectangle {
                     anchors.centerIn: parent
                     text: "ON"
                     color: Theme.base
-                    font.family: "JetBrainsMono Nerd Font"
+                    font.family: Fonts.sans
                     font.pixelSize: 10
-                    font.bold: true
+                    font.weight: Font.Bold
                 }
             }
         }
@@ -87,18 +93,18 @@ Rectangle {
                     spacing: 10
 
                     Text {
-                        text: modelData.connected === "yes" ? "󰂱" : "󰂯"
+                        text: modelData.connected === "yes" ? "\ue1a8" : "\ue1a7" // bluetooth_connected / bluetooth
                         color: modelData.connected === "yes" ? Theme.secondary : Theme.muted
-                        font.family: "JetBrainsMono Nerd Font"
+                        font.family: Fonts.icon
                         font.pixelSize: 16
                     }
 
                     Text {
                         text: modelData.name || modelData.address
                         color: Theme.text
-                        font.family: "JetBrainsMono Nerd Font"
+                        font.family: Fonts.sans
                         font.pixelSize: 13
-                        font.bold: modelData.connected === "yes"
+                        font.weight: modelData.connected === "yes" ? Font.DemiBold : Font.Normal
                         elide: Text.ElideRight
                         Layout.fillWidth: true
                     }
@@ -107,7 +113,7 @@ Rectangle {
                         visible: modelData.connected === "yes"
                         text: "Connected"
                         color: Theme.secondary
-                        font.family: "JetBrainsMono Nerd Font"
+                        font.family: Fonts.sans
                         font.pixelSize: 10
                     }
                 }
@@ -119,9 +125,9 @@ Rectangle {
                     cursorShape: Qt.PointingHandCursor
                     onClicked: {
                         if (modelData.connected === "yes") {
-                            Quickshell.exec("bluetoothctl disconnect " + modelData.address)
+                            Quickshell.execDetached(["bluetoothctl", "disconnect", modelData.address])
                         } else {
-                            Quickshell.exec("bluetoothctl connect " + modelData.address)
+                            Quickshell.execDetached(["bluetoothctl", "connect", modelData.address])
                         }
                     }
                 }

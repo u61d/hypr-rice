@@ -40,7 +40,7 @@ PanelWindow {
     }
 
     function loadHistory() {
-        let proc = Qt.createQmlObject('import Quickshell.Io; Process { command: "cliphist list" }', root)
+        let proc = Qt.createQmlObject('import Quickshell.Io; Process { command: ["cliphist", "list"] }', root)
         proc.stdout.connect((data) => {
             clipModel.clear()
             let lines = data.split('\n')
@@ -57,8 +57,7 @@ PanelWindow {
     }
 
     function pasteItem(id) {
-        let proc = Qt.createQmlObject('import Quickshell.Io; Process { command: "cliphist decode " + id + " | wl-copy" }', root)
-        proc.running = true
+        Quickshell.execDetached(["sh", "-c", "cliphist decode " + id + " | wl-copy"])
         globalState.clipboardVisible = false
     }
 
@@ -87,24 +86,34 @@ PanelWindow {
 
             RowLayout {
                 Layout.fillWidth: true
+                spacing: 8
+
                 Text {
-                    text: "󰅌 Clipboard History"
+                    text: "\ue14f" // content_paste
                     color: Theme.primary
-                    font.family: "JetBrainsMono Nerd Font"
+                    font.family: Fonts.icon
                     font.pixelSize: 16
-                    font.bold: true
+                }
+
+                Text {
+                    text: "Clipboard History"
+                    color: Theme.primary
+                    font.family: Fonts.sans
+                    font.pixelSize: 16
+                    font.weight: Font.DemiBold
                     Layout.fillWidth: true
                 }
                 MouseArea {
                     Layout.preferredWidth: 20
                     Layout.preferredHeight: 20
+                    hoverEnabled: true
                     Text {
                         anchors.centerIn: parent
-                        text: "󰅖"
+                        text: "\ue5cd" // close
                         color: parent.containsMouse ? Theme.red : Theme.text
-                        font.family: "JetBrainsMono Nerd Font"
+                        font.family: Fonts.icon
+                        font.pixelSize: 15
                     }
-                    hoverEnabled: true
                     onClicked: globalState.clipboardVisible = false
                 }
             }
@@ -121,7 +130,7 @@ PanelWindow {
                 placeholderText: "Search clipboard..."
                 color: Theme.text
                 placeholderTextColor: Theme.muted
-                font.family: "Inter"
+                font.family: Fonts.sans
                 font.pixelSize: 13
                 padding: 8
                 background: Rectangle {
@@ -156,7 +165,7 @@ PanelWindow {
                         Text {
                             text: model.text
                             color: Theme.text
-                            font.family: "Inter"
+                            font.family: Fonts.sans
                             font.pixelSize: 13
                             elide: Text.ElideRight
                             Layout.fillWidth: true
@@ -170,9 +179,10 @@ PanelWindow {
                             visible: parentItem.containsMouse
                             Text {
                                 anchors.centerIn: parent
-                                text: "󰆴"
+                                text: "\ue92e" // delete
                                 color: parent.containsMouse ? Theme.red : Theme.muted
-                                font.family: "JetBrainsMono Nerd Font"
+                                font.family: Fonts.icon
+                                font.pixelSize: 15
                             }
                             onClicked: deleteItem(model.id)
                         }

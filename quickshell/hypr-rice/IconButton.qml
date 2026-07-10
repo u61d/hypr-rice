@@ -23,9 +23,8 @@ Rectangle {
         anchors.centerIn: parent
         text: root.icon
         color: root.accent
-        font.family: "JetBrainsMono Nerd Font"
-        font.pixelSize: 15
-        font.bold: true
+        font.family: Fonts.icon
+        font.pixelSize: 18
     }
 
     MouseArea {

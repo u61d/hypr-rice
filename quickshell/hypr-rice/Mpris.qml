@@ -46,19 +46,18 @@ Rectangle {
             spacing: 8
             
             Text {
-                text: activePlayer && activePlayer.isPlaying ? "󰏤" : "󰐊"
+                text: activePlayer && activePlayer.isPlaying ? "\ue034" : "\ue037" // pause / play_arrow
                 color: Theme.primary
-                font.family: "JetBrainsMono Nerd Font"
-                font.pixelSize: 14
-                font.bold: true
+                font.family: Fonts.icon
+                font.pixelSize: 16
             }
 
             Text {
                 text: activePlayer ? (activePlayer.trackTitle || "Unknown") : ""
                 color: Theme.text
-                font.family: "JetBrainsMono Nerd Font"
+                font.family: Fonts.sans
                 font.pixelSize: 13
-                font.bold: true
+                font.weight: Font.Medium
                 elide: Text.ElideRight
                 Layout.maximumWidth: 150
             }
@@ -91,9 +90,9 @@ Rectangle {
                 Text {
                     text: activePlayer ? (activePlayer.trackTitle || "Unknown") : ""
                     color: Theme.text
-                    font.family: "JetBrainsMono Nerd Font"
+                    font.family: Fonts.sans
                     font.pixelSize: 12
-                    font.bold: true
+                    font.weight: Font.Medium
                     elide: Text.ElideRight
                     Layout.fillWidth: true
                 }
@@ -104,10 +103,10 @@ Rectangle {
                     cursorShape: Qt.PointingHandCursor
                     Text {
                         anchors.centerIn: parent
-                        text: "󰒮"
+                        text: "\ue045" // skip_previous
                         color: parent.containsMouse ? Theme.primary : Theme.text
-                        font.family: "JetBrainsMono Nerd Font"
-                        font.pixelSize: 14
+                        font.family: Fonts.icon
+                        font.pixelSize: 16
                     }
                     hoverEnabled: true
                     onClicked: if(activePlayer) activePlayer.previous()
@@ -119,10 +118,10 @@ Rectangle {
                     cursorShape: Qt.PointingHandCursor
                     Text {
                         anchors.centerIn: parent
-                        text: activePlayer && activePlayer.isPlaying ? "󰏤" : "󰐊"
+                        text: activePlayer && activePlayer.isPlaying ? "\ue034" : "\ue037" // pause / play_arrow
                         color: parent.containsMouse ? Theme.primary : Theme.text
-                        font.family: "JetBrainsMono Nerd Font"
-                        font.pixelSize: 14
+                        font.family: Fonts.icon
+                        font.pixelSize: 16
                     }
                     hoverEnabled: true
                     onClicked: if(activePlayer) activePlayer.isPlaying ? activePlayer.pause() : activePlayer.play()
@@ -134,10 +133,10 @@ Rectangle {
                     cursorShape: Qt.PointingHandCursor
                     Text {
                         anchors.centerIn: parent
-                        text: "󰒭"
+                        text: "\ue044" // skip_next
                         color: parent.containsMouse ? Theme.primary : Theme.text
-                        font.family: "JetBrainsMono Nerd Font"
-                        font.pixelSize: 14
+                        font.family: Fonts.icon
+                        font.pixelSize: 16
                     }
                     hoverEnabled: true
                     onClicked: if(activePlayer) activePlayer.next()

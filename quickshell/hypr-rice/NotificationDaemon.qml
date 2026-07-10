@@ -92,16 +92,16 @@ Item {
                             anchors.centerIn: parent
                             text: {
                                 const name = (modelData.appName || "").toLowerCase()
-                                if (name.includes("discord")) return "󰙯"
-                                if (name.includes("firefox") || name.includes("browser")) return "󰈹"
-                                if (name.includes("spotify")) return "󰓇"
-                                if (name.includes("telegram")) return ""
-                                if (name.includes("thunderbird") || name.includes("mail")) return "󰇰"
-                                if (name.includes("screenshot") || name.includes("grim")) return "󰹑"
-                                return "󰂚"
+                                if (name.includes("discord")) return "\ue0c9" // chat
+                                if (name.includes("firefox") || name.includes("browser")) return "\ue80b" // public
+                                if (name.includes("spotify")) return "\ue405" // music_note
+                                if (name.includes("telegram")) return "\ue163" // send
+                                if (name.includes("thunderbird") || name.includes("mail")) return "\ue159" // mail
+                                if (name.includes("screenshot") || name.includes("grim")) return "\ue412" // photo_camera
+                                return "\ue7f5" // notifications
                             }
                             color: Theme.primary
-                            font.family: "JetBrainsMono Nerd Font"
+                            font.family: Fonts.icon
                             font.pixelSize: 22
                         }
                     }
@@ -114,7 +114,7 @@ Item {
                         Text {
                             text: modelData.appName || "Notification"
                             color: Qt.rgba(Theme.muted.r, Theme.muted.g, Theme.muted.b, 0.7)
-                            font.family: "JetBrainsMono Nerd Font"
+                            font.family: Fonts.sans
                             font.pixelSize: 11
                             font.weight: Font.Medium
                         }
@@ -123,8 +123,8 @@ Item {
                         Text {
                             text: modelData.summary || ""
                             color: Theme.text
-                            font.family: "JetBrainsMono Nerd Font"
-                            font.bold: true
+                            font.family: Fonts.sans
+                            font.weight: Font.DemiBold
                             font.pixelSize: 14
                             elide: Text.ElideRight
                             Layout.fillWidth: true
@@ -135,7 +135,7 @@ Item {
                             visible: (modelData.body || "").length > 0
                             text: modelData.body || ""
                             color: Theme.muted
-                            font.family: "JetBrainsMono Nerd Font"
+                            font.family: Fonts.sans
                             font.pixelSize: 13
                             wrapMode: Text.Wrap
                             maximumLineCount: 3
@@ -158,10 +158,10 @@ Item {
 
                         Text {
                             anchors.centerIn: parent
-                            text: "󰅖"
+                            text: "\ue5cd" // close
                             color: closeBtn.containsMouse ? Theme.base : Theme.text
-                            font.family: "JetBrainsMono Nerd Font"
-                            font.pixelSize: 12
+                            font.family: Fonts.icon
+                            font.pixelSize: 14
                             Behavior on color { ColorAnimation { duration: 180 } }
                         }
 

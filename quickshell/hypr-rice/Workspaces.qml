@@ -38,11 +38,10 @@ RowLayout {
 
             Text {
                 anchors.centerIn: parent
-                text: button.active ? "󰮯" : (button.occupied ? "󰺵" : "·")
+                text: (button.active || button.occupied) ? "●" : "·"
                 color: button.active ? Theme.mantle : Theme.text
-                font.family: "JetBrainsMono Nerd Font"
-                font.pixelSize: button.active ? 15 : 14
-                font.bold: true
+                font.family: Fonts.sans
+                font.pixelSize: button.active ? 11 : 10
             }
 
             // === Workspace Tooltip Preview ===
@@ -85,23 +84,23 @@ RowLayout {
                                 anchors.centerIn: parent
                                 text: {
                                     const cls = (modelData || "").toLowerCase()
-                                    if (cls.includes("kitty") || cls.includes("terminal")) return ""
-                                    if (cls.includes("firefox") || cls.includes("browser")) return "󰈹"
-                                    if (cls.includes("chromium") || cls.includes("chrome")) return ""
-                                    if (cls.includes("discord")) return "󰙯"
-                                    if (cls.includes("spotify")) return "󰓇"
-                                    if (cls.includes("code") || cls.includes("cursor")) return "󰨞"
-                                    if (cls.includes("nautilus") || cls.includes("files")) return "󰉋"
-                                    if (cls.includes("telegram")) return ""
-                                    if (cls.includes("steam")) return "󰓓"
-                                    if (cls.includes("obs")) return "󰑋"
-                                    if (cls.includes("gimp")) return "󰃣"
-                                    if (cls.includes("blender")) return "󰂫"
-                                    return "󰣆"
+                                    if (cls.includes("kitty") || cls.includes("terminal")) return "\ueb8e" // terminal
+                                    if (cls.includes("firefox") || cls.includes("browser")) return "\ue80b" // public
+                                    if (cls.includes("chromium") || cls.includes("chrome")) return "\ue80b" // public
+                                    if (cls.includes("discord")) return "\ue0c9" // chat
+                                    if (cls.includes("spotify")) return "\ue405" // music_note
+                                    if (cls.includes("code") || cls.includes("cursor")) return "\ue86f" // code
+                                    if (cls.includes("nautilus") || cls.includes("files")) return "\ue2c7" // folder
+                                    if (cls.includes("telegram")) return "\ue163" // send
+                                    if (cls.includes("steam")) return "\uea28" // sports_esports
+                                    if (cls.includes("obs")) return "\ue04b" // videocam
+                                    if (cls.includes("gimp")) return "\ue40a" // palette
+                                    if (cls.includes("blender")) return "\uefc9" // view_in_ar
+                                    return "\ue5c3" // apps
                                 }
                                 color: Theme.primary
-                                font.family: "JetBrainsMono Nerd Font"
-                                font.pixelSize: 14
+                                font.family: Fonts.icon
+                                font.pixelSize: 15
                             }
                         }
                     }

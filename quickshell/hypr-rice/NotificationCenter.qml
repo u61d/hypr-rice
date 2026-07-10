@@ -49,14 +49,14 @@ PanelWindow {
 
     function getIcon(name) {
         let n = name.toLowerCase()
-        if (n.includes("discord")) return "󰙯"
-        if (n.includes("firefox")) return "󰈹"
-        if (n.includes("spotify")) return "󰓇"
-        if (n.includes("telegram")) return ""
-        if (n.includes("thunderbird")) return ""
-        if (n.includes("grim")) return "󰄀"
-        if (n.includes("volume") || n.includes("brightness")) return "󰕾"
-        return "󰂚"
+        if (n.includes("discord")) return "\ue0c9" // chat
+        if (n.includes("firefox")) return "\ue80b" // public
+        if (n.includes("spotify")) return "\ue405" // music_note
+        if (n.includes("telegram")) return "\ue163" // send
+        if (n.includes("thunderbird")) return "\ue159" // mail
+        if (n.includes("grim")) return "\ue412" // photo_camera
+        if (n.includes("volume") || n.includes("brightness")) return "\ue050" // volume_up
+        return "\ue7f5" // notifications
     }
 
     Rectangle {
@@ -73,12 +73,21 @@ PanelWindow {
 
             RowLayout {
                 Layout.fillWidth: true
+                spacing: 8
+
                 Text {
-                    text: "󰂚 Notifications"
+                    text: "\ue7f5" // notifications
                     color: Theme.primary
-                    font.family: "JetBrainsMono Nerd Font"
+                    font.family: Fonts.icon
                     font.pixelSize: 18
-                    font.bold: true
+                }
+
+                Text {
+                    text: "Notifications"
+                    color: Theme.primary
+                    font.family: Fonts.sans
+                    font.pixelSize: 16
+                    font.weight: Font.DemiBold
                     Layout.fillWidth: true
                 }
 
@@ -91,7 +100,7 @@ PanelWindow {
                         anchors.centerIn: parent
                         text: "Clear All"
                         color: Theme.text
-                        font.family: "Inter"
+                        font.family: Fonts.sans
                         font.pixelSize: 12
                     }
                     MouseArea {
@@ -105,14 +114,14 @@ PanelWindow {
                     Layout.preferredWidth: 24
                     Layout.preferredHeight: 24
                     cursorShape: Qt.PointingHandCursor
+                    hoverEnabled: true
                     Text {
                         anchors.centerIn: parent
-                        text: "󰅖"
+                        text: "\ue5cd" // close
                         color: parent.containsMouse ? Theme.red : Theme.text
-                        font.family: "JetBrainsMono Nerd Font"
+                        font.family: Fonts.icon
                         font.pixelSize: 16
                     }
-                    hoverEnabled: true
                     onClicked: globalState.notificationCenterVisible = false
                 }
             }
@@ -126,7 +135,7 @@ PanelWindow {
             Text {
                 text: "No new notifications"
                 color: Theme.muted
-                font.family: "Inter"
+                font.family: Fonts.sans
                 font.pixelSize: 14
                 visible: historyModel.count === 0
                 Layout.alignment: Qt.AlignHCenter
@@ -159,14 +168,14 @@ PanelWindow {
                             Text {
                                 text: getIcon(model.iconId)
                                 color: Theme.primary
-                                font.family: "JetBrainsMono Nerd Font"
-                                font.pixelSize: 14
+                                font.family: Fonts.icon
+                                font.pixelSize: 16
                             }
 
                             Text {
                                 text: model.appName || "Notification"
                                 color: Theme.muted
-                                font.family: "Inter"
+                                font.family: Fonts.sans
                                 font.pixelSize: 12
                                 Layout.fillWidth: true
                             }
@@ -174,7 +183,7 @@ PanelWindow {
                             Text {
                                 text: model.time
                                 color: Theme.muted
-                                font.family: "Inter"
+                                font.family: Fonts.sans
                                 font.pixelSize: 10
                             }
 
@@ -184,9 +193,9 @@ PanelWindow {
                                 cursorShape: Qt.PointingHandCursor
                                 Text {
                                     anchors.centerIn: parent
-                                    text: "󰅖"
+                                    text: "\ue5cd" // close
                                     color: Theme.muted
-                                    font.family: "JetBrainsMono Nerd Font"
+                                    font.family: Fonts.icon
                                     font.pixelSize: 12
                                 }
                                 onClicked: historyModel.remove(index)
@@ -196,9 +205,9 @@ PanelWindow {
                         Text {
                             text: model.summary
                             color: Theme.text
-                            font.family: "Inter"
+                            font.family: Fonts.sans
                             font.pixelSize: 14
-                            font.bold: true
+                            font.weight: Font.DemiBold
                             Layout.fillWidth: true
                             wrapMode: Text.Wrap
                         }
@@ -206,7 +215,7 @@ PanelWindow {
                         Text {
                             text: model.body
                             color: Theme.text
-                            font.family: "Inter"
+                            font.family: Fonts.sans
                             font.pixelSize: 13
                             Layout.fillWidth: true
                             wrapMode: Text.Wrap

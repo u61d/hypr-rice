@@ -3,11 +3,8 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-Item {
+Singleton {
     id: root
-    width: 0
-    height: 0
-    visible: false
 
     property var workspaces: []
     property int activeWorkspace: 1

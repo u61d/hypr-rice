@@ -11,7 +11,7 @@ cd "$SCRIPT_DIR"
 echo "== Installing packages (requires yay for AUR) =="
 PACMAN_PKGS=(hyprland hyprlock hypridle \
     kitty grim slurp wl-clipboard cliphist brightnessctl pavucontrol \
-    ttf-jetbrains-mono-nerd papirus-icon-theme polkit-gnome nautilus \
+    ttf-jetbrains-mono-nerd inter-font ttf-material-symbols-variable papirus-icon-theme polkit-gnome nautilus \
     cava jq socat qt6ct networkmanager upower curl wf-recorder hyprpicker)
 AUR_PKGS=(swww bibata-cursor-theme-bin catppuccin-cursors-mocha quickshell-git matugen)
 

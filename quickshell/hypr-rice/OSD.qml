@@ -9,7 +9,7 @@ Rectangle {
 
     property string currentMode: "volume"
     property int currentValue: 0
-    property string currentIcon: "󰕾"
+    property string currentIcon: "\ue050" // volume_up
 
     width: 240
     height: 60
@@ -31,8 +31,8 @@ Rectangle {
         Text {
             text: root.currentIcon
             color: Theme.primary
-            font.family: "JetBrainsMono Nerd Font"
-            font.pixelSize: 22
+            font.family: Fonts.icon
+            font.pixelSize: 20
             Layout.alignment: Qt.AlignVCenter
         }
 
@@ -55,9 +55,9 @@ Rectangle {
         Text {
             text: root.currentValue + "%"
             color: Theme.text
-            font.family: "JetBrainsMono Nerd Font"
+            font.family: Fonts.sans
             font.pixelSize: 14
-            font.bold: true
+            font.weight: Font.DemiBold
             Layout.preferredWidth: 40
             horizontalAlignment: Text.AlignRight
             Layout.alignment: Qt.AlignVCenter
@@ -74,12 +74,12 @@ Rectangle {
         root.currentMode = mode
         root.currentValue = val
         if (mode === "volume") {
-            if (val === 0) root.currentIcon = "󰖁"
-            else if (val < 30) root.currentIcon = "󰕿"
-            else if (val < 70) root.currentIcon = "󰖀"
-            else root.currentIcon = "󰕾"
+            if (val === 0) root.currentIcon = "\ue04f" // volume_off
+            else if (val < 30) root.currentIcon = "\ue04d" // volume_down
+            else if (val < 70) root.currentIcon = "\ue050" // volume_up
+            else root.currentIcon = "\ue050" // volume_up
         } else {
-            root.currentIcon = "󰃠"
+            root.currentIcon = "\ue3ab" // brightness_6
         }
         win.visible = true
         hideTimer.restart()

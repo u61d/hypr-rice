@@ -83,9 +83,10 @@ PanelWindow {
                     hoverEnabled: true
                     Text {
                         anchors.centerIn: parent
-                        text: ""
+                        text: "\ue5cb" // chevron_left
                         color: parent.containsMouse ? Theme.primary : Theme.text
-                        font.family: "JetBrainsMono Nerd Font"
+                        font.family: Fonts.icon
+                        font.pixelSize: 18
                     }
                     onClicked: root.currentMonthOffset--
                 }
@@ -98,9 +99,9 @@ PanelWindow {
                     }
                     text: Qt.formatDateTime(displayedDate, "MMMM yyyy")
                     color: Theme.primary
-                    font.family: "Inter"
+                    font.family: Fonts.sans
                     font.pixelSize: 16
-                    font.bold: true
+                    font.weight: Font.DemiBold
                     Layout.fillWidth: true
                     horizontalAlignment: Text.AlignHCenter
                 }
@@ -112,9 +113,10 @@ PanelWindow {
                     hoverEnabled: true
                     Text {
                         anchors.centerIn: parent
-                        text: ""
+                        text: "\ue5cc" // chevron_right
                         color: parent.containsMouse ? Theme.primary : Theme.text
-                        font.family: "JetBrainsMono Nerd Font"
+                        font.family: Fonts.icon
+                        font.pixelSize: 18
                     }
                     onClicked: root.currentMonthOffset++
                 }
@@ -134,9 +136,9 @@ PanelWindow {
                         required property string modelData
                         text: modelData
                         color: Theme.muted
-                        font.family: "Inter"
+                        font.family: Fonts.sans
                         font.pixelSize: 12
-                        font.bold: true
+                        font.weight: Font.DemiBold
                         Layout.fillWidth: true
                         horizontalAlignment: Text.AlignHCenter
                     }
@@ -165,9 +167,9 @@ PanelWindow {
                             anchors.centerIn: parent
                             text: parent.dayText
                             color: parent.isToday ? Theme.base : Theme.text
-                            font.family: "Inter"
+                            font.family: Fonts.sans
                             font.pixelSize: 13
-                            font.bold: parent.isToday
+                            font.weight: parent.isToday ? Font.DemiBold : Font.Normal
                         }
 
                         MouseArea {

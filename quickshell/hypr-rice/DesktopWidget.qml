@@ -18,7 +18,7 @@ Item {
             Layout.alignment: Qt.AlignHCenter
             text: Qt.formatTime(new Date(), "hh:mm")
             color: Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.25)
-            font.family: "JetBrainsMono Nerd Font"
+            font.family: Fonts.sans
             font.pixelSize: 200
             font.weight: Font.Black
             
@@ -30,26 +30,44 @@ Item {
             Layout.topMargin: -20
             text: Qt.formatDate(new Date(), "dddd, MMMM d")
             color: Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.15)
-            font.family: "JetBrainsMono Nerd Font"
+            font.family: Fonts.sans
             font.pixelSize: 22
             font.weight: Font.Medium
         }
 
-        Text {
-            id: greetingText
+        RowLayout {
             Layout.alignment: Qt.AlignHCenter
             Layout.topMargin: 24
-            text: {
-                const h = new Date().getHours()
-                if (h < 6) return "Good Night  󰖔"
-                if (h < 12) return "Good Morning  "
-                if (h < 18) return "Good Afternoon  󰖨"
-                return "Good Evening  󰖔"
+            spacing: 8
+
+            Text {
+                id: greetingIcon
+                text: {
+                    const h = new Date().getHours()
+                    if (h < 6) return "\uf159" // bedtime
+                    if (h < 12) return "\ue430" // wb_sunny
+                    if (h < 18) return "\ue81a" // sunny
+                    return "\ue1c6" // wb_twilight
+                }
+                color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.50)
+                font.family: Fonts.icon
+                font.pixelSize: 20
             }
-            color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.50)
-            font.family: "JetBrainsMono Nerd Font"
-            font.pixelSize: 20
-            font.weight: Font.Bold
+
+            Text {
+                id: greetingText
+                text: {
+                    const h = new Date().getHours()
+                    if (h < 6) return "Good Night"
+                    if (h < 12) return "Good Morning"
+                    if (h < 18) return "Good Afternoon"
+                    return "Good Evening"
+                }
+                color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.50)
+                font.family: Fonts.sans
+                font.pixelSize: 20
+                font.weight: Font.DemiBold
+            }
         }
 
         Weather {

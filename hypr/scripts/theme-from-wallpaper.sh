@@ -57,9 +57,11 @@ return {
 EOF
 
 cat > "$HOME/.config/quickshell/hypr-rice/Theme.qml" <<EOF
+pragma Singleton
 import QtQuick
+import Quickshell
 
-QtObject {
+Singleton {
     readonly property color base: "$base"
     readonly property color mantle: "$mantle"
     readonly property color surface: "$surface"

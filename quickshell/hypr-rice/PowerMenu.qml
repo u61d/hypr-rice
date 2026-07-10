@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
-import Quickshell.Io
 import Quickshell.Wayland
 
 PanelWindow {
@@ -36,12 +35,12 @@ PanelWindow {
 
             Repeater {
                 model: ListModel {
-                    ListElement { name: "Lock"; icon: ""; command: "hyprlock"; colorId: "primary" }
-                    ListElement { name: "Logout"; icon: "󰍃"; command: "hyprctl dispatch exit"; colorId: "yellow" }
-                    ListElement { name: "Suspend"; icon: "󰤄"; command: "systemctl suspend"; colorId: "blue" }
-                    ListElement { name: "Hibernate"; icon: "󰋊"; command: "systemctl hibernate"; colorId: "green" }
-                    ListElement { name: "Reboot"; icon: "󰜉"; command: "systemctl reboot"; colorId: "tertiary" }
-                    ListElement { name: "Shutdown"; icon: "⏻"; command: "systemctl poweroff"; colorId: "red" }
+                    ListElement { name: "Lock"; icon: "\ue899"; command: "hyprlock"; colorId: "primary" }
+                    ListElement { name: "Logout"; icon: "\ue9ba"; command: "hyprctl dispatch exit"; colorId: "yellow" }
+                    ListElement { name: "Suspend"; icon: "\uf159"; command: "systemctl suspend"; colorId: "secondary" }
+                    ListElement { name: "Hibernate"; icon: "\ue161"; command: "systemctl hibernate"; colorId: "green" }
+                    ListElement { name: "Reboot"; icon: "\uf053"; command: "systemctl reboot"; colorId: "tertiary" }
+                    ListElement { name: "Shutdown"; icon: "\uf8c7"; command: "systemctl poweroff"; colorId: "red" }
                 }
 
                 delegate: Rectangle {
@@ -63,14 +62,14 @@ PanelWindow {
                         Text {
                             text: model.icon
                             color: hoverArea.containsMouse ? Theme[model.colorId] : Theme.text
-                            font.family: "JetBrainsMono Nerd Font"
-                            font.pixelSize: 36
+                            font.family: Fonts.icon
+                            font.pixelSize: 34
                             Layout.alignment: Qt.AlignHCenter
                         }
                         Text {
                             text: model.name
                             color: Theme.text
-                            font.family: "Inter"
+                            font.family: Fonts.sans
                             font.pixelSize: 14
                             Layout.alignment: Qt.AlignHCenter
                         }
@@ -82,8 +81,7 @@ PanelWindow {
                         hoverEnabled: true
                         onClicked: {
                             globalState.powerMenuVisible = false
-                            let proc = Qt.createQmlObject('import Quickshell.Io; Process { command: "' + model.command + '" }', root)
-                            proc.running = true
+                            Quickshell.execDetached(["sh", "-c", model.command])
                         }
                     }
                 }

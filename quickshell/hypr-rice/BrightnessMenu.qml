@@ -25,7 +25,7 @@ Rectangle {
     Behavior on opacity { NumberAnimation { duration: 200 } }
 
     function updateBrightness() {
-        let proc = Qt.createQmlObject('import Quickshell.Io; Process { command: "brightnessctl -m | awk -F, \'{print int($4)}\'" }', root)
+        let proc = Qt.createQmlObject('import Quickshell.Io; Process { command: ["sh", "-c", "brightnessctl -m | awk -F, \'{print int($4)}\'"] }', root)
         proc.stdout.connect((data) => {
             root.brightness = parseInt(data)
             slider.value = root.brightness
@@ -50,10 +50,10 @@ Rectangle {
         spacing: 12
 
         Text {
-            text: "󰃠"
+            text: "\ue3ab" // brightness_6
             color: Theme.primary
-            font.family: "JetBrainsMono Nerd Font"
-            font.pixelSize: 20
+            font.family: Fonts.icon
+            font.pixelSize: 18
         }
 
         Slider {
@@ -63,8 +63,7 @@ Rectangle {
             to: 100
             stepSize: 1
             onMoved: {
-                let proc = Qt.createQmlObject('import Quickshell.Io; Process { command: "brightnessctl set " + slider.value + "%" }', root)
-                proc.running = true
+                Quickshell.execDetached(["brightnessctl", "set", slider.value + "%"])
             }
 
             background: Rectangle {
