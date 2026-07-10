@@ -63,11 +63,12 @@ Item {
 
                 // Wi-Fi icon with dropdown
                 Item {
-                    Layout.preferredWidth: wifiIcon.width
+                    Layout.preferredWidth: 30
                     Layout.preferredHeight: 28
                     
                 IconButton {
                     id: wifiIcon
+                    anchors.fill: parent
                     icon: ""
                     property string command: ""
                     onClicked: networkMenu.expanded = !networkMenu.expanded
@@ -107,11 +108,12 @@ Item {
 
                 // Bluetooth icon with dropdown
                 Item {
-                    Layout.preferredWidth: btIcon.width
+                    Layout.preferredWidth: 30
                     Layout.preferredHeight: 28
                     
                     IconButton {
                         id: btIcon
+                        anchors.fill: parent
                         icon: ""
                         property string command: ""
                         onClicked: bluetoothMenu.expanded = !bluetoothMenu.expanded
@@ -139,11 +141,12 @@ Item {
 
                 // Brightness icon with dropdown
                 Item {
-                    Layout.preferredWidth: brightnessIcon.width
+                    Layout.preferredWidth: 30
                     Layout.preferredHeight: 28
                     
                     IconButton {
                         id: brightnessIcon
+                        anchors.fill: parent
                         icon: ""
                         property string command: ""
                         onClicked: brightnessMenu.expanded = !brightnessMenu.expanded

@@ -8,6 +8,7 @@ import Quickshell.Services.Mpris
 Rectangle {
     id: root
     required property var win
+    required property var globalState
 
     anchors.fill: parent
     color: Qt.rgba(Theme.base.r, Theme.base.g, Theme.base.b, 0.72)
@@ -19,12 +20,12 @@ Rectangle {
     // Click background to dismiss
     MouseArea {
         anchors.fill: parent
-        onClicked: win.visible = false
+        onClicked: root.globalState.dashboardVisible = false
     }
 
     Keys.onPressed: event => {
         if (event.key === Qt.Key_Escape) {
-            win.visible = false
+            root.globalState.dashboardVisible = false
             event.accepted = true
         }
     }
@@ -90,7 +91,7 @@ Rectangle {
                         onAccepted: {
                             if (filteredApps.count > 0) {
                                 filteredApps.values[0].execute()
-                                win.visible = false
+                                root.globalState.dashboardVisible = false
                                 searchInput.text = ""
                             }
                         }
@@ -324,7 +325,7 @@ Rectangle {
                             cursorShape: Qt.PointingHandCursor
                             onClicked: {
                                 modelData.execute()
-                                win.visible = false
+                                root.globalState.dashboardVisible = false
                                 searchInput.text = ""
                             }
                         }

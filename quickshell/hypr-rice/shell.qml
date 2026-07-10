@@ -96,7 +96,7 @@ ShellRoot {
             WlrLayershell.namespace: "dashboard"
             WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
             
-            Dashboard { win: dashboardWindow }
+            Dashboard { win: dashboardWindow; globalState: globalState }
         }
     }
 
