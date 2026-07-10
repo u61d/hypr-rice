@@ -24,13 +24,22 @@ Rectangle {
     Behavior on implicitHeight { NumberAnimation { duration: 300; easing.type: Easing.OutExpo } }
     Behavior on opacity { NumberAnimation { duration: 200 } }
 
+    Process {
+        id: brightnessProc
+        command: ["sh", "-c", "brightnessctl -m | awk -F, '{print int($4)}'"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                const val = parseInt(text.trim())
+                if (!isNaN(val)) {
+                    root.brightness = val
+                    slider.value = root.brightness
+                }
+            }
+        }
+    }
+
     function updateBrightness() {
-        let proc = Qt.createQmlObject('import Quickshell.Io; Process { command: ["sh", "-c", "brightnessctl -m | awk -F, \'{print int($4)}\'"] }', root)
-        proc.stdout.connect((data) => {
-            root.brightness = parseInt(data)
-            slider.value = root.brightness
-        })
-        proc.running = true
+        brightnessProc.running = true
     }
 
     onExpandedChanged: {

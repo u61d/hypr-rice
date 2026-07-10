@@ -8,8 +8,17 @@ Item {
     required property var panelWindow
     required property string screenName
 
+    property real maxMenuHeight: Math.max(
+        brightnessMenu.height > 0 ? brightnessMenu.height + 12 : 0,
+        networkMenu.height > 0 ? networkMenu.height + 12 : 0,
+        bluetoothMenu.height > 0 ? bluetoothMenu.height + 12 : 0
+    )
+
     RowLayout {
-        anchors.fill: parent
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: 38
         spacing: 8
 
         Pill {
@@ -130,13 +139,13 @@ Item {
                 IconButton {
                     icon: globalState.dndEnabled ? "" : ""
                     accent: globalState.dndEnabled ? Theme.muted : Theme.primary
-                    command: "quickshell ipc call hypr-rice toggleDnd"
+                    onClicked: globalState.dndEnabled = !globalState.dndEnabled
                 }
 
                 IconButton {
                     icon: ""
                     accent: Theme.primary
-                    command: "quickshell ipc call hypr-rice toggleNotificationCenter"
+                    onClicked: globalState.notificationCenterVisible = !globalState.notificationCenterVisible
                 }
 
                 // Brightness icon with dropdown
@@ -190,12 +199,12 @@ Item {
                 IconButton {
                     icon: ""
                     accent: Theme.primary
-                    command: "quickshell ipc call hypr-rice toggleClipboard"
+                    onClicked: globalState.clipboardVisible = !globalState.clipboardVisible
                 }
                 IconButton {
                     icon: ""
                     accent: Theme.red
-                    command: "quickshell ipc call hypr-rice togglePowerMenu"
+                    onClicked: globalState.powerMenuVisible = !globalState.powerMenuVisible
                 }
             }
         }

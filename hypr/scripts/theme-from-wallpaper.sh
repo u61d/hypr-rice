@@ -119,5 +119,5 @@ EOF
 
 if [[ "${HYPR_RICE_NO_RELOAD:-0}" != "1" ]]; then
     hyprctl reload >/dev/null 2>&1 || true
-    quickshell ipc call hypr-rice reloadTheme >/dev/null 2>&1 || true
+    qs ipc call hypr-rice reloadTheme >/dev/null 2>&1 || true
 fi

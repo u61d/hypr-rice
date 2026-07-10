@@ -78,7 +78,7 @@ Rectangle {
                     Layout.preferredHeight: 20
                     radius: 10
                     color: "transparent"
-                    visible: activePlayer && activePlayer.trackArtUrl != ""
+                    visible: !!(activePlayer && activePlayer.trackArtUrl != "")
 
                     Image {
                         anchors.fill: parent
