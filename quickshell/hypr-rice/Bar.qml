@@ -8,17 +8,8 @@ Item {
     required property var panelWindow
     required property string screenName
 
-    property real maxMenuHeight: Math.max(
-        brightnessMenu.height > 0 ? brightnessMenu.height + 12 : 0,
-        networkMenu.height > 0 ? networkMenu.height + 12 : 0,
-        bluetoothMenu.height > 0 ? bluetoothMenu.height + 12 : 0
-    )
-
     RowLayout {
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.right: parent.right
-        height: 38
+        anchors.fill: parent
         spacing: 8
 
         Pill {
@@ -79,7 +70,6 @@ Item {
                     id: wifiIcon
                     anchors.fill: parent
                     icon: ""
-                    property string command: ""
                     onClicked: networkMenu.expanded = !networkMenu.expanded
 
                     Timer {
@@ -124,7 +114,6 @@ Item {
                         id: btIcon
                         anchors.fill: parent
                         icon: ""
-                        property string command: ""
                         onClicked: bluetoothMenu.expanded = !bluetoothMenu.expanded
                     }
                     
@@ -139,13 +128,13 @@ Item {
                 IconButton {
                     icon: globalState.dndEnabled ? "" : ""
                     accent: globalState.dndEnabled ? Theme.muted : Theme.primary
-                    onClicked: globalState.dndEnabled = !globalState.dndEnabled
+                    command: "quickshell ipc call hypr-rice toggleDnd"
                 }
 
                 IconButton {
                     icon: ""
                     accent: Theme.primary
-                    onClicked: globalState.notificationCenterVisible = !globalState.notificationCenterVisible
+                    command: "quickshell ipc call hypr-rice toggleNotificationCenter"
                 }
 
                 // Brightness icon with dropdown
@@ -157,7 +146,6 @@ Item {
                         id: brightnessIcon
                         anchors.fill: parent
                         icon: ""
-                        property string command: ""
                         onClicked: brightnessMenu.expanded = !brightnessMenu.expanded
                     }
                     
@@ -199,12 +187,12 @@ Item {
                 IconButton {
                     icon: ""
                     accent: Theme.primary
-                    onClicked: globalState.clipboardVisible = !globalState.clipboardVisible
+                    command: "quickshell ipc call hypr-rice toggleClipboard"
                 }
                 IconButton {
                     icon: ""
                     accent: Theme.red
-                    onClicked: globalState.powerMenuVisible = !globalState.powerMenuVisible
+                    command: "quickshell ipc call hypr-rice togglePowerMenu"
                 }
             }
         }

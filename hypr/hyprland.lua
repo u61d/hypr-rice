@@ -27,8 +27,8 @@ end
 
 local terminal = "kitty"
 local file_manager = "nautilus"
-local menu = "qs ipc call hypr-rice toggleDashboard"
-local quickshell = "qs --config hypr-rice --daemonize"
+local menu = "quickshell ipc call hypr-rice toggleDashboard"
+local quickshell = "quickshell --config hypr-rice --daemonize"
 
 hl.monitor({
   output = "",
@@ -225,8 +225,8 @@ hl.bind(mod .. " + SHIFT + Q", hl.dsp.exit())
 hl.bind(mod .. " + E", hl.dsp.exec_cmd(file_manager))
 hl.bind(mod .. " + SPACE", hl.dsp.exec_cmd(menu))
 hl.bind(mod .. " + SHIFT + V", hl.dsp.window.float({ action = "toggle" }))
-hl.bind(mod .. " + V", hl.dsp.exec_cmd("qs ipc call hypr-rice toggleClipboard"))
-hl.bind(mod .. " + N", hl.dsp.exec_cmd("qs ipc call hypr-rice toggleNotificationCenter"))
+hl.bind(mod .. " + V", hl.dsp.exec_cmd("quickshell ipc call hypr-rice toggleClipboard"))
+hl.bind(mod .. " + N", hl.dsp.exec_cmd("quickshell ipc call hypr-rice toggleNotificationCenter"))
 hl.bind(mod .. " + P", hl.dsp.window.pseudo())
 hl.bind(mod .. " + J", hl.dsp.layout("togglesplit"))
 hl.bind(mod .. " + F", hl.dsp.window.fullscreen())

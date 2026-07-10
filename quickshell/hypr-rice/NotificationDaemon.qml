@@ -24,13 +24,10 @@ Item {
 
             Rectangle {
                 id: card
-                property bool isQuickshellReload: (modelData.appName === "quickshell" || modelData.appName === "Quickshell" || modelData.appName === "qs") && (modelData.summary || "").includes("Config reloaded")
-
-                Layout.preferredWidth: isQuickshellReload ? 0 : 380
-                Layout.preferredHeight: isQuickshellReload ? 0 : cardContent.implicitHeight + 28
+                Layout.preferredWidth: 380
+                Layout.preferredHeight: cardContent.implicitHeight + 28
                 radius: 16
                 clip: true
-                visible: !isQuickshellReload
 
                 // Glassmorphism
                 color: Qt.rgba(Theme.base.r, Theme.base.g, Theme.base.b, 0.88)
@@ -53,7 +50,7 @@ Item {
                 property real enterOpacity: 1
 
                 transform: Translate { x: card.enterX }
-                opacity: isQuickshellReload ? 0 : card.enterOpacity
+                opacity: card.enterOpacity
 
                 Component.onCompleted: {
                     enterX = 420

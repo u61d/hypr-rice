@@ -24,22 +24,19 @@ Rectangle {
     Behavior on implicitHeight { NumberAnimation { duration: 300; easing.type: Easing.OutExpo } }
     Behavior on opacity { NumberAnimation { duration: 200 } }
 
+    function updateBrightness() {
+        if (!brightnessProc.running) brightnessProc.running = true
+    }
+
     Process {
         id: brightnessProc
         command: ["sh", "-c", "brightnessctl -m | awk -F, '{print int($4)}'"]
-        stdout: StdioCollector {
-            onStreamFinished: {
-                const val = parseInt(text.trim())
-                if (!isNaN(val)) {
-                    root.brightness = val
-                    slider.value = root.brightness
-                }
+        stdout: SplitParser {
+            onRead: data => {
+                root.brightness = parseInt(data)
+                slider.value = root.brightness
             }
         }
-    }
-
-    function updateBrightness() {
-        brightnessProc.running = true
     }
 
     onExpandedChanged: {
