@@ -14,6 +14,36 @@ ShellRoot {
         property bool notificationCenterVisible: false
         property bool dndEnabled: false
         property bool calendarVisible: false
+        property bool networkMenuVisible: false
+        property bool bluetoothMenuVisible: false
+        property bool brightnessMenuVisible: false
+
+        // Opens exactly one popup at a time, closing any others so they
+        // never overlap on screen.
+        function openOnly(name) {
+            clipboardVisible = name === "clipboard"
+            powerMenuVisible = name === "power"
+            notificationCenterVisible = name === "notifications"
+            calendarVisible = name === "calendar"
+            networkMenuVisible = name === "network"
+            bluetoothMenuVisible = name === "bluetooth"
+            brightnessMenuVisible = name === "brightness"
+        }
+
+        function toggleOnly(name, current) {
+            if (current) {
+                // it's already open, so this call is closing it
+                if (name === "clipboard") clipboardVisible = false
+                else if (name === "power") powerMenuVisible = false
+                else if (name === "notifications") notificationCenterVisible = false
+                else if (name === "calendar") calendarVisible = false
+                else if (name === "network") networkMenuVisible = false
+                else if (name === "bluetooth") bluetoothMenuVisible = false
+                else if (name === "brightness") brightnessMenuVisible = false
+            } else {
+                openOnly(name)
+            }
+        }
     }
 
     QtObject {
@@ -62,6 +92,7 @@ ShellRoot {
     Variants {
         model: Quickshell.screens
         PanelWindow {
+            id: notifWindow
             required property ShellScreen modelData
             screen: modelData
             anchors.top: true
@@ -73,9 +104,9 @@ ShellRoot {
             WlrLayershell.layer: WlrLayer.Overlay
             WlrLayershell.namespace: "notifications"
             WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
-            mask: null
+            mask: Region { item: notifDaemon.maskItem }
 
-            NotificationDaemon {}
+            NotificationDaemon { id: notifDaemon }
         }
     }
 
@@ -135,10 +166,11 @@ ShellRoot {
             WlrLayershell.layer: WlrLayer.Overlay
             WlrLayershell.namespace: "osd"
             WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
-            mask: null
+            mask: Region { item: osdItem }
             visible: false
 
             OSD {
+                id: osdItem
                 win: osdWindow
                 anchors.bottom: parent.bottom
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -172,6 +204,21 @@ ShellRoot {
         CalendarPopup { modelData: modelData }
     }
 
+    Variants {
+        model: Quickshell.screens
+        NetworkMenu { modelData: modelData }
+    }
+
+    Variants {
+        model: Quickshell.screens
+        BluetoothMenu { modelData: modelData }
+    }
+
+    Variants {
+        model: Quickshell.screens
+        BrightnessMenu { modelData: modelData }
+    }
+
     IpcHandler {
         target: "hypr-rice"
         function reloadTheme() {
@@ -181,19 +228,19 @@ ShellRoot {
             globalState.dashboardVisible = !globalState.dashboardVisible
         }
         function toggleClipboard() {
-            globalState.clipboardVisible = !globalState.clipboardVisible
+            globalState.toggleOnly("clipboard", globalState.clipboardVisible)
         }
         function togglePowerMenu() {
-            globalState.powerMenuVisible = !globalState.powerMenuVisible
+            globalState.toggleOnly("power", globalState.powerMenuVisible)
         }
         function toggleNotificationCenter() {
-            globalState.notificationCenterVisible = !globalState.notificationCenterVisible
+            globalState.toggleOnly("notifications", globalState.notificationCenterVisible)
         }
         function toggleDnd() {
             globalState.dndEnabled = !globalState.dndEnabled
         }
         function toggleCalendar() {
-            globalState.calendarVisible = !globalState.calendarVisible
+            globalState.toggleOnly("calendar", globalState.calendarVisible)
         }
         function showOsd(mode: string, val: string): void {
             osdBridge.mode = mode

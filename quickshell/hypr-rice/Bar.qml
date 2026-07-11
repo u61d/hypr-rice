@@ -61,16 +61,10 @@ Item {
                     clickCommand: "pavucontrol"
                 }
 
-                // Wi-Fi icon with dropdown
-                Item {
-                    Layout.preferredWidth: 30
-                    Layout.preferredHeight: 28
-                    
                 IconButton {
                     id: wifiIcon
-                    anchors.fill: parent
-                    icon: ""
-                    onClicked: networkMenu.expanded = !networkMenu.expanded
+                    icon: "\ue648"
+                    onClicked: globalState.toggleOnly("network", globalState.networkMenuVisible)
 
                     Timer {
                         interval: 3000
@@ -85,76 +79,40 @@ Item {
                         stdout: StdioCollector {
                             onStreamFinished: {
                                 const sig = parseInt(text.trim())
-                                if (isNaN(sig)) wifiIcon.icon = ""
-                                else if (sig < 30) wifiIcon.icon = ""
-                                else if (sig < 60) wifiIcon.icon = ""
-                                else if (sig < 80) wifiIcon.icon = ""
-                                else wifiIcon.icon = ""
+                                if (isNaN(sig)) wifiIcon.icon = "\ue648"
+                                else if (sig < 30) wifiIcon.icon = "\uebe4"
+                                else if (sig < 60) wifiIcon.icon = "\uebd6"
+                                else if (sig < 80) wifiIcon.icon = "\uebe1"
+                                else wifiIcon.icon = "\ue63e"
                             }
                         }
                     }
 
                     Component.onCompleted: wifiCheck.running = true
                 }
-                    
-                    NetworkMenu {
-                        id: networkMenu
-                        anchors.top: parent.bottom
-                        anchors.topMargin: 12
-                        anchors.right: parent.right
-                    }
-                }
 
-                // Bluetooth icon with dropdown
-                Item {
-                    Layout.preferredWidth: 30
-                    Layout.preferredHeight: 28
-                    
-                    IconButton {
-                        id: btIcon
-                        anchors.fill: parent
-                        icon: ""
-                        onClicked: bluetoothMenu.expanded = !bluetoothMenu.expanded
-                    }
-                    
-                    BluetoothMenu {
-                        id: bluetoothMenu
-                        anchors.top: parent.bottom
-                        anchors.topMargin: 12
-                        anchors.right: parent.right
-                    }
+                IconButton {
+                    id: btIcon
+                    icon: "\ue1a7"
+                    onClicked: globalState.toggleOnly("bluetooth", globalState.bluetoothMenuVisible)
                 }
 
                 IconButton {
-                    icon: globalState.dndEnabled ? "" : ""
+                    icon: globalState.dndEnabled ? "\uf08f" : "\ue7f7"
                     accent: globalState.dndEnabled ? Theme.muted : Theme.primary
-                    command: "quickshell ipc call hypr-rice toggleDnd"
+                    command: "qs -c hypr-rice ipc call hypr-rice toggleDnd"
                 }
 
                 IconButton {
-                    icon: ""
+                    icon: "\ue7f5"
                     accent: Theme.primary
-                    command: "quickshell ipc call hypr-rice toggleNotificationCenter"
+                    command: "qs -c hypr-rice ipc call hypr-rice toggleNotificationCenter"
                 }
 
-                // Brightness icon with dropdown
-                Item {
-                    Layout.preferredWidth: 30
-                    Layout.preferredHeight: 28
-                    
-                    IconButton {
-                        id: brightnessIcon
-                        anchors.fill: parent
-                        icon: ""
-                        onClicked: brightnessMenu.expanded = !brightnessMenu.expanded
-                    }
-                    
-                    BrightnessMenu {
-                        id: brightnessMenu
-                        anchors.top: parent.bottom
-                        anchors.topMargin: 12
-                        anchors.right: parent.right
-                    }
+                IconButton {
+                    id: brightnessIcon
+                    icon: "\ue3ab"
+                    onClicked: globalState.toggleOnly("brightness", globalState.brightnessMenuVisible)
                 }
 
                 StatusModule {
@@ -187,12 +145,12 @@ Item {
                 IconButton {
                     icon: ""
                     accent: Theme.primary
-                    command: "quickshell ipc call hypr-rice toggleClipboard"
+                    command: "qs -c hypr-rice ipc call hypr-rice toggleClipboard"
                 }
                 IconButton {
                     icon: ""
                     accent: Theme.red
-                    command: "quickshell ipc call hypr-rice togglePowerMenu"
+                    command: "qs -c hypr-rice ipc call hypr-rice togglePowerMenu"
                 }
             }
         }

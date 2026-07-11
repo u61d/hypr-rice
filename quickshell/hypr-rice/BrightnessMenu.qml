@@ -3,26 +3,28 @@ import QtQuick.Layouts
 import QtQuick.Controls
 import Quickshell
 import Quickshell.Io
+import Quickshell.Wayland
 
-Rectangle {
+PanelWindow {
     id: root
-    property bool expanded: false
+    required property ShellScreen modelData
+    screen: modelData
     property int brightness: 0
 
-    implicitWidth: expanded ? 240 : 0
-    implicitHeight: expanded ? 80 : 0
-    radius: 16
-    clip: true
-    color: Qt.rgba(Theme.base.r, Theme.base.g, Theme.base.b, 0.92)
-    border.width: 1
-    border.color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.3)
-
-    opacity: expanded ? 1 : 0
-    visible: opacity > 0
-
-    Behavior on implicitWidth { NumberAnimation { duration: 300; easing.type: Easing.OutExpo } }
-    Behavior on implicitHeight { NumberAnimation { duration: 300; easing.type: Easing.OutExpo } }
-    Behavior on opacity { NumberAnimation { duration: 200 } }
+    implicitWidth: 240
+    implicitHeight: 80
+    color: "transparent"
+    anchors.top: true
+    anchors.right: true
+    margins {
+        top: 50
+        right: 10
+    }
+    WlrLayershell.layer: WlrLayer.Overlay
+    WlrLayershell.namespace: "brightness-menu"
+    WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
+    mask: null
+    visible: globalState.brightnessMenuVisible
 
     function updateBrightness() {
         if (!brightnessProc.running) brightnessProc.running = true
@@ -39,65 +41,73 @@ Rectangle {
         }
     }
 
-    onExpandedChanged: {
-        if (expanded) updateBrightness()
+    onVisibleChanged: {
+        if (visible) updateBrightness()
     }
 
     Timer {
-        running: expanded
+        running: root.visible
         repeat: true
         interval: 2000
         onTriggered: updateBrightness()
     }
 
-    RowLayout {
+    Rectangle {
         anchors.fill: parent
-        anchors.margins: 16
-        spacing: 12
+        radius: 16
+        color: Qt.rgba(Theme.base.r, Theme.base.g, Theme.base.b, 0.95)
+        border.width: 1
+        border.color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.3)
 
-        Text {
-            text: "\ue3ab" // brightness_6
-            color: Theme.primary
-            font.family: Fonts.icon
-            font.pixelSize: 18
-        }
+        RowLayout {
+            anchors.fill: parent
+            anchors.margins: 16
+            spacing: 12
 
-        Slider {
-            id: slider
-            Layout.fillWidth: true
-            from: 0
-            to: 100
-            stepSize: 1
-            onMoved: {
-                Quickshell.execDetached(["brightnessctl", "set", slider.value + "%"])
+            Text {
+                text: "\ue3ab" // brightness_6
+                color: Theme.primary
+                font.family: Fonts.icon
+                font.pixelSize: 18
             }
 
-            background: Rectangle {
-                x: slider.leftPadding
-                y: slider.topPadding + slider.availableHeight / 2 - height / 2
-                implicitWidth: 200
-                implicitHeight: 6
-                width: slider.availableWidth
-                height: implicitHeight
-                radius: 3
-                color: Qt.rgba(Theme.surfaceHigh.r, Theme.surfaceHigh.g, Theme.surfaceHigh.b, 0.6)
-
-                Rectangle {
-                    width: slider.visualPosition * parent.width
-                    height: parent.height
-                    color: Theme.primary
-                    radius: 3
+            Slider {
+                id: slider
+                Layout.fillWidth: true
+                from: 0
+                to: 100
+                stepSize: 1
+                onMoved: {
+                    Quickshell.execDetached(["brightnessctl", "set", slider.value + "%"])
                 }
-            }
 
-            handle: Rectangle {
-                x: slider.leftPadding + slider.visualPosition * (slider.availableWidth - width)
-                y: slider.topPadding + slider.availableHeight / 2 - height / 2
-                implicitWidth: 16
-                implicitHeight: 16
-                radius: 8
-                color: slider.pressed ? Theme.surfaceHigh : Theme.text
-                border.color: Theme.primary
+                background: Rectangle {
+                    x: slider.leftPadding
+                    y: slider.topPadding + slider.availableHeight / 2 - height / 2
+                    implicitWidth: 200
+                    implicitHeight: 6
+                    width: slider.availableWidth
+                    height: implicitHeight
+                    radius: 3
+                    color: Qt.rgba(Theme.surfaceHigh.r, Theme.surfaceHigh.g, Theme.surfaceHigh.b, 0.6)
+
+                    Rectangle {
+                        width: slider.visualPosition * parent.width
+                        height: parent.height
+                        color: Theme.primary
+                        radius: 3
+                    }
+                }
+
+                handle: Rectangle {
+                    x: slider.leftPadding + slider.visualPosition * (slider.availableWidth - width)
+                    y: slider.topPadding + slider.availableHeight / 2 - height / 2
+                    implicitWidth: 16
+                    implicitHeight: 16
+                    radius: 8
+                    color: slider.pressed ? Theme.surfaceHigh : Theme.text
+                    border.color: Theme.primary
+                }
             }
         }
     }

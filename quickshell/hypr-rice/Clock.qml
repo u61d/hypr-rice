@@ -20,6 +20,6 @@ Text {
     MouseArea {
         anchors.fill: parent
         cursorShape: Qt.PointingHandCursor
-        onClicked: Quickshell.execDetached(["quickshell", "ipc", "call", "hypr-rice", "toggleCalendar"])
+        onClicked: Quickshell.execDetached(["qs", "-c", "hypr-rice", "ipc", "call", "hypr-rice", "toggleCalendar"])
     }
 }

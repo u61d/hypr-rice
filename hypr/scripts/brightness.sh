@@ -11,4 +11,4 @@ case "$1" in
 esac
 
 val=$(brightnessctl -m | awk -F, '{print int($4)}')
-quickshell ipc call hypr-rice showOsd "brightness" "$val"
+qs -c hypr-rice ipc call hypr-rice showOsd "brightness" "$val"

@@ -17,6 +17,18 @@ AUR_PKGS=(swww bibata-cursor-theme-bin catppuccin-cursors-mocha quickshell-git m
 
 sudo pacman -S --needed --noconfirm "${PACMAN_PKGS[@]}"
 
+echo "== Granting brightness control permissions =="
+if ! groups "$USER" | grep -qw video; then
+    sudo usermod -aG video "$USER"
+    echo "Added $USER to the 'video' group — this is required for brightnessctl to actually"
+    echo "write to /sys/class/backlight without root. You MUST log out and back in (or reboot)"
+    echo "for this group membership to take effect, otherwise the brightness slider will move"
+    echo "but nothing will happen."
+else
+    echo "$USER is already in the 'video' group."
+fi
+sudo udevadm control --reload-rules && sudo udevadm trigger --subsystem-match=backlight || true
+
 if command -v yay &>/dev/null; then
     yay -S --needed --noconfirm "${AUR_PKGS[@]}"
 else

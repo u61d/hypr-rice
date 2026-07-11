@@ -6,6 +6,8 @@ import Quickshell.Services.Notifications
 Item {
     id: root
 
+    property alias maskItem: notifColumn
+
     // Notification popup column — top-right corner, stacking downward
     ColumnLayout {
         id: notifColumn

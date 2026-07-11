@@ -20,4 +20,4 @@ if [ "$mute" -eq 1 ]; then
     vol=0
 fi
 
-quickshell ipc call hypr-rice showOsd "volume" "$vol"
+qs -c hypr-rice ipc call hypr-rice showOsd "volume" "$vol"
