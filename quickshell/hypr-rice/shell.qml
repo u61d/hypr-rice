@@ -17,6 +17,7 @@ ShellRoot {
         property bool networkMenuVisible: false
         property bool bluetoothMenuVisible: false
         property bool brightnessMenuVisible: false
+        property bool settingsVisible: false
 
         // Opens exactly one popup at a time, closing any others so they
         // never overlap on screen.
@@ -134,6 +135,27 @@ ShellRoot {
     Variants {
         model: Quickshell.screens
         PanelWindow {
+            id: settingsWindow
+            required property ShellScreen modelData
+            screen: modelData
+            anchors.top: true
+            anchors.bottom: true
+            anchors.left: true
+            anchors.right: true
+            color: "transparent"
+            aboveWindows: true
+            visible: globalState.settingsVisible
+            WlrLayershell.layer: WlrLayer.Overlay
+            WlrLayershell.namespace: "settings"
+            WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
+
+            SettingsPanel { win: settingsWindow; globalState: globalState }
+        }
+    }
+
+    Variants {
+        model: Quickshell.screens
+        PanelWindow {
             required property ShellScreen modelData
             screen: modelData
             anchors.top: true
@@ -167,7 +189,8 @@ ShellRoot {
             WlrLayershell.namespace: "osd"
             WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
             mask: Region { item: osdItem }
-            visible: false
+            // visible is driven by OSD.qml's own close animation (root.mapped),
+            // so the fade/scale-out actually plays before the window unmaps.
 
             OSD {
                 id: osdItem
@@ -211,6 +234,9 @@ ShellRoot {
         }
         function toggleDashboard() {
             globalState.dashboardVisible = !globalState.dashboardVisible
+        }
+        function toggleSettings() {
+            globalState.settingsVisible = !globalState.settingsVisible
         }
         function toggleClipboard() {
             globalState.toggleOnly("clipboard", globalState.clipboardVisible)

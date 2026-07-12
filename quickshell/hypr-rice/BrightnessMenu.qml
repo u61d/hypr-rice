@@ -9,15 +9,24 @@ PopupWindow {
     required property var anchorWindow
     required property Item triggerItem
     property int brightness: 50
+    // The window stays mapped while closeAnim plays, so we get an actual
+    // exit transition instead of the popup vanishing the instant it's
+    // dismissed (visible on a PopupWindow unmaps it immediately).
+    property bool reallyVisible: false
 
     implicitWidth: 280
     implicitHeight: 110
     color: "transparent"
-    visible: globalState.brightnessMenuVisible
+    visible: root.reallyVisible
 
     anchor.window: anchorWindow
     anchor.rect.x: anchorWindow.contentItem.mapFromItem(triggerItem, triggerItem.width / 2, 0).x - implicitWidth / 2
     anchor.rect.y: anchorWindow.contentItem.mapFromItem(triggerItem, 0, triggerItem.height).y + 10
+    // Pin gravity explicitly and use Slide (not the default Flip) so popups near
+    // the screen edge get nudged back on-screen instead of jumping to the
+    // opposite side of the anchor point.
+    anchor.gravity: Edges.Bottom | Edges.Right
+    anchor.adjustment: PopupAdjustment.Slide
 
     function updateBrightness() {
         if (!brightnessProc.running) brightnessProc.running = true
@@ -25,7 +34,7 @@ PopupWindow {
 
     Process {
         id: brightnessProc
-        command: ["sh", "-c", "brightnessctl -m | awk -F, '{print int($4)}'"]
+        command: ["sh", "-c", "brightnessctl -c backlight -m | awk -F, '{print int($4)}'"]
         stdout: SplitParser {
             onRead: data => {
                 root.brightness = parseInt(data)
@@ -34,12 +43,20 @@ PopupWindow {
         }
     }
 
-    onVisibleChanged: {
-        if (visible) {
-            pop.scale = 0.85
-            pop.opacity = 0
-            scaleAnim.restart()
-            updateBrightness()
+    Connections {
+        target: globalState
+        function onBrightnessMenuVisibleChanged() {
+            if (globalState.brightnessMenuVisible) {
+                root.reallyVisible = true
+                pop.scale = 0.85
+                pop.opacity = 0
+                closeAnim.stop()
+                openAnim.restart()
+                root.updateBrightness()
+            } else {
+                openAnim.stop()
+                closeAnim.restart()
+            }
         }
     }
 
@@ -58,10 +75,18 @@ PopupWindow {
         transformOrigin: Item.Top
 
         ParallelAnimation {
-            id: scaleAnim
+            id: openAnim
             running: false
             NumberAnimation { target: pop; property: "scale"; to: 1; duration: 220; easing.type: Easing.OutBack; easing.overshoot: 1.6 }
             NumberAnimation { target: pop; property: "opacity"; to: 1; duration: 160; easing.type: Easing.OutCubic }
+        }
+
+        ParallelAnimation {
+            id: closeAnim
+            running: false
+            onFinished: root.reallyVisible = false
+            NumberAnimation { target: pop; property: "scale"; to: 0.88; duration: 140; easing.type: Easing.InCubic }
+            NumberAnimation { target: pop; property: "opacity"; to: 0; duration: 130; easing.type: Easing.InCubic }
         }
 
         Rectangle {
@@ -127,7 +152,7 @@ PopupWindow {
                         to: 100
                         stepSize: 1
                         onMoved: {
-                            Quickshell.execDetached(["brightnessctl", "set", Math.round(slider.value) + "%"])
+                            Quickshell.execDetached(["brightnessctl", "-c", "backlight", "set", Math.round(slider.value) + "%"])
                         }
 
                         background: Rectangle {

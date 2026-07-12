@@ -6,6 +6,12 @@ import Quickshell.Io
 Rectangle {
     id: root
     required property var win
+    // The OSD window only unmaps once closeAnim finishes, so the shrink/fade
+    // out actually plays instead of the surface vanishing the instant the
+    // hide timer fires.
+    property bool mapped: false
+
+    Binding { target: root.win; property: "visible"; value: root.mapped }
 
     property string currentMode: "volume"
     property int currentValue: 0
@@ -18,10 +24,24 @@ Rectangle {
     border.width: 1
     border.color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.3)
 
-    opacity: win.visible ? 1 : 0
-    scale: win.visible ? 1 : 0.8
-    Behavior on opacity { NumberAnimation { duration: 200 } }
-    Behavior on scale { NumberAnimation { duration: 300; easing.type: Easing.OutBack } }
+    opacity: 0
+    scale: 0.8
+    transformOrigin: Item.Bottom
+
+    ParallelAnimation {
+        id: openAnim
+        running: false
+        NumberAnimation { target: root; property: "opacity"; to: 1; duration: 200; easing.type: Easing.OutCubic }
+        NumberAnimation { target: root; property: "scale"; to: 1; duration: 320; easing.type: Easing.OutBack; easing.overshoot: 1.5 }
+    }
+
+    ParallelAnimation {
+        id: closeAnim
+        running: false
+        onFinished: root.mapped = false
+        NumberAnimation { target: root; property: "opacity"; to: 0; duration: 160; easing.type: Easing.InCubic }
+        NumberAnimation { target: root; property: "scale"; to: 0.82; duration: 180; easing.type: Easing.InCubic }
+    }
 
     RowLayout {
         anchors.fill: parent
@@ -67,7 +87,10 @@ Rectangle {
     Timer {
         id: hideTimer
         interval: 2000
-        onTriggered: win.visible = false
+        onTriggered: {
+            openAnim.stop()
+            closeAnim.restart()
+        }
     }
 
     function showOsd(mode, val) {
@@ -81,7 +104,9 @@ Rectangle {
         } else {
             root.currentIcon = "\ue3ab" // brightness_6
         }
-        win.visible = true
+        closeAnim.stop()
+        root.mapped = true
+        openAnim.restart()
         hideTimer.restart()
     }
 
