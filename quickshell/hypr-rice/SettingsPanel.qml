@@ -5,25 +5,44 @@ import Quickshell.Io
 
 Rectangle {
     id: root
+
     required property var win
     required property var globalState
-
     property string currentPage: "appearance"
-
-    readonly property var navModel: [
-        { id: "appearance", label: "Appearance", icon: "\ue40a" },
-        { id: "wallpaper", label: "Wallpaper", icon: "\ue3f4" },
-        { id: "keybinds", label: "Keybinds", icon: "\ue312" },
-        { id: "monitors", label: "Monitors", icon: "\ue30a" },
-        { id: "about", label: "About", icon: "\ue88e" }
-    ]
-    readonly property var currentPageMeta: navModel.find(p => p.id === currentPage) || navModel[0]
+    readonly property var navModel: [{
+        "id": "appearance",
+        "label": "Appearance",
+        "icon": "\ue40a"
+    }, {
+        "id": "wallpaper",
+        "label": "Wallpaper",
+        "icon": "\ue3f4"
+    }, {
+        "id": "keybinds",
+        "label": "Keybinds",
+        "icon": "\ue312"
+    }, {
+        "id": "monitors",
+        "label": "Monitors",
+        "icon": "\ue30a"
+    }, {
+        "id": "about",
+        "label": "About",
+        "icon": "\ue88e"
+    }]
+    readonly property var currentPageMeta: navModel.find(function(p) {
+        return p.id === currentPage;
+    }) || navModel[0]
 
     anchors.fill: parent
     color: Qt.rgba(Theme.base.r, Theme.base.g, Theme.base.b, 0.72)
-
     opacity: win.visible ? 1 : 0
-    Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
+    Keys.onPressed: function(event) {
+        if (event.key === Qt.Key_Escape) {
+            root.globalState.settingsVisible = false;
+            event.accepted = true;
+        }
+    }
 
     // Click background to dismiss
     MouseArea {
@@ -31,23 +50,20 @@ Rectangle {
         onClicked: root.globalState.settingsVisible = false
     }
 
-    Keys.onPressed: event => {
-        if (event.key === Qt.Key_Escape) {
-            root.globalState.settingsVisible = false
-            event.accepted = true
-        }
-    }
-
     Connections {
-        target: win
         function onVisibleChanged() {
-            if (win.visible) root.forceActiveFocus()
+            if (win.visible)
+                root.forceActiveFocus();
+
         }
+
+        target: win
     }
 
     // === Central Card ===
     Rectangle {
         id: mainCard
+
         anchors.centerIn: parent
         width: 920
         height: 640
@@ -56,14 +72,15 @@ Rectangle {
         color: Qt.rgba(Theme.surface.r, Theme.surface.g, Theme.surface.b, 0.5)
         border.width: 1
         border.color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.22)
-
         scale: win.visible ? 1 : 0.88
         opacity: win.visible ? 1 : 0
-        Behavior on scale { NumberAnimation { duration: 380; easing.type: Easing.OutBack; easing.overshoot: 1.3 } }
-        Behavior on opacity { NumberAnimation { duration: 200 } }
 
         // Swallow clicks so they don't fall through to the background dismiss area
-        MouseArea { anchors.fill: parent; onClicked: {} }
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {
+            }
+        }
 
         RowLayout {
             anchors.fill: parent
@@ -81,27 +98,50 @@ Rectangle {
                     Layout.topMargin: 6
                     Layout.bottomMargin: 14
                     spacing: 8
+
                     Rectangle {
                         Layout.preferredWidth: 30
                         Layout.preferredHeight: 30
                         radius: 11
                         color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.18)
-                        Text { anchors.centerIn: parent; text: "\ue8b8"; color: Theme.primary; font.family: Fonts.icon; font.pixelSize: 17 } // settings gear
+
+                        // settings gear
+                        Text {
+                            anchors.centerIn: parent
+                            text: "\ue8b8"
+                            color: Theme.primary
+                            font.family: Fonts.icon
+                            font.pixelSize: 17
+                        }
+
                     }
-                    Text { text: "Settings"; color: Theme.text; font.family: Fonts.sans; font.pixelSize: 16; font.weight: Font.Bold }
+
+                    Text {
+                        text: "Settings"
+                        color: Theme.text
+                        font.family: Fonts.sans
+                        font.pixelSize: 16
+                        font.weight: Font.Bold
+                    }
+
                 }
 
                 // Sidebar nav with a shared highlight that glides between items
                 // instead of each row flashing its own background independently.
                 Item {
                     id: navWrap
+
+                    readonly property int activeIndex: root.navModel.findIndex(function(p) {
+                        return p.id === root.currentPage;
+                    })
+                    readonly property Item activeItem: navRepeater.itemAt(activeIndex)
+
                     Layout.fillWidth: true
                     Layout.preferredHeight: navList.implicitHeight
-                    readonly property int activeIndex: root.navModel.findIndex(p => p.id === root.currentPage)
-                    readonly property Item activeItem: navRepeater.itemAt(activeIndex)
 
                     Rectangle {
                         id: navIndicator
+
                         radius: 14
                         color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.15)
                         border.width: 1
@@ -111,29 +151,47 @@ Rectangle {
                         y: navWrap.activeItem ? navWrap.activeItem.y : 0
                         width: navWrap.activeItem ? navWrap.activeItem.width : 0
                         height: navWrap.activeItem ? navWrap.activeItem.height : 0
-                        Behavior on y { NumberAnimation { duration: 280; easing.type: Easing.OutExpo } }
-                        Behavior on x { NumberAnimation { duration: 280; easing.type: Easing.OutExpo } }
+
+                        Behavior on y {
+                            NumberAnimation {
+                                duration: 280
+                                easing.type: Easing.OutExpo
+                            }
+
+                        }
+
+                        Behavior on x {
+                            NumberAnimation {
+                                duration: 280
+                                easing.type: Easing.OutExpo
+                            }
+
+                        }
+
                     }
 
                     ColumnLayout {
                         id: navList
+
                         width: parent.width
                         spacing: 2
 
                         Repeater {
                             id: navRepeater
+
                             model: root.navModel
 
                             Rectangle {
                                 id: navItem
+
                                 readonly property bool active: root.currentPage === modelData.id
+
                                 Layout.fillWidth: true
                                 Layout.leftMargin: 10
                                 Layout.rightMargin: 10
                                 Layout.preferredHeight: 46
                                 radius: 14
                                 color: (navMouse.containsMouse && !active) ? Qt.rgba(Theme.surfaceHigh.r, Theme.surfaceHigh.g, Theme.surfaceHigh.b, 0.35) : "transparent"
-                                Behavior on color { ColorAnimation { duration: 160 } }
 
                                 RowLayout {
                                     anchors.fill: parent
@@ -145,7 +203,7 @@ Rectangle {
                                         Layout.preferredHeight: 32
                                         radius: 11
                                         color: navItem.active ? Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.22) : "transparent"
-                                        Behavior on color { ColorAnimation { duration: 200 } }
+
                                         Text {
                                             anchors.centerIn: parent
                                             text: modelData.icon
@@ -153,7 +211,16 @@ Rectangle {
                                             font.family: Fonts.icon
                                             font.pixelSize: 17
                                         }
+
+                                        Behavior on color {
+                                            ColorAnimation {
+                                                duration: 200
+                                            }
+
+                                        }
+
                                     }
+
                                     Text {
                                         text: modelData.label
                                         color: navItem.active ? Theme.text : Theme.muted
@@ -161,21 +228,37 @@ Rectangle {
                                         font.pixelSize: 14
                                         font.weight: navItem.active ? Font.DemiBold : Font.Medium
                                     }
+
                                 }
 
                                 MouseArea {
                                     id: navMouse
+
                                     anchors.fill: parent
                                     hoverEnabled: true
                                     cursorShape: Qt.PointingHandCursor
                                     onClicked: root.currentPage = modelData.id
                                 }
+
+                                Behavior on color {
+                                    ColorAnimation {
+                                        duration: 160
+                                    }
+
+                                }
+
                             }
+
                         }
+
                     }
+
                 }
 
-                Item { Layout.fillHeight: true }
+                Item {
+                    Layout.fillHeight: true
+                }
+
             }
 
             // === Content surface — visually separated from the sidebar ===
@@ -192,11 +275,13 @@ Rectangle {
 
                     RowLayout {
                         spacing: 12
+
                         Rectangle {
                             Layout.preferredWidth: 42
                             Layout.preferredHeight: 42
                             radius: 15
                             color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.16)
+
                             Text {
                                 anchors.centerIn: parent
                                 text: root.currentPageMeta.icon
@@ -204,12 +289,28 @@ Rectangle {
                                 font.family: Fonts.icon
                                 font.pixelSize: 21
                             }
+
                         }
-                        Text { text: root.currentPageMeta.label; color: Theme.text; font.family: Fonts.sans; font.pixelSize: 22; font.weight: Font.Bold }
-                        Item { Layout.fillWidth: true }
+
+                        Text {
+                            text: root.currentPageMeta.label
+                            color: Theme.text
+                            font.family: Fonts.sans
+                            font.pixelSize: 22
+                            font.weight: Font.Bold
+                        }
+
+                        Item {
+                            Layout.fillWidth: true
+                        }
+
                     }
 
-                    Rectangle { Layout.fillWidth: true; Layout.preferredHeight: 1; color: Qt.rgba(Theme.surfaceHigh.r, Theme.surfaceHigh.g, Theme.surfaceHigh.b, 0.5) }
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 1
+                        color: Qt.rgba(Theme.surfaceHigh.r, Theme.surfaceHigh.g, Theme.surfaceHigh.b, 0.5)
+                    }
 
                     // === Page stack ===
                     Item {
@@ -234,7 +335,14 @@ Rectangle {
                                     Layout.fillWidth: true
                                 }
 
-                                Text { text: "PALETTE"; color: Theme.muted; font.family: Fonts.sans; font.pixelSize: 11; font.weight: Font.Bold; Layout.topMargin: 4 }
+                                Text {
+                                    text: "PALETTE"
+                                    color: Theme.muted
+                                    font.family: Fonts.sans
+                                    font.pixelSize: 11
+                                    font.weight: Font.Bold
+                                    Layout.topMargin: 4
+                                }
 
                                 GridLayout {
                                     columns: 4
@@ -243,23 +351,47 @@ Rectangle {
                                     Layout.fillWidth: true
 
                                     Repeater {
-                                        model: [
-                                            { name: "base", c: Theme.base },
-                                            { name: "mantle", c: Theme.mantle },
-                                            { name: "surface", c: Theme.surface },
-                                            { name: "surfaceHigh", c: Theme.surfaceHigh },
-                                            { name: "text", c: Theme.text },
-                                            { name: "muted", c: Theme.muted },
-                                            { name: "primary", c: Theme.primary },
-                                            { name: "secondary", c: Theme.secondary },
-                                            { name: "tertiary", c: Theme.tertiary },
-                                            { name: "green", c: Theme.green },
-                                            { name: "yellow", c: Theme.yellow },
-                                            { name: "red", c: Theme.red }
-                                        ]
+                                        model: [{
+                                            "name": "base",
+                                            "c": Theme.base
+                                        }, {
+                                            "name": "mantle",
+                                            "c": Theme.mantle
+                                        }, {
+                                            "name": "surface",
+                                            "c": Theme.surface
+                                        }, {
+                                            "name": "surfaceHigh",
+                                            "c": Theme.surfaceHigh
+                                        }, {
+                                            "name": "text",
+                                            "c": Theme.text
+                                        }, {
+                                            "name": "muted",
+                                            "c": Theme.muted
+                                        }, {
+                                            "name": "primary",
+                                            "c": Theme.primary
+                                        }, {
+                                            "name": "secondary",
+                                            "c": Theme.secondary
+                                        }, {
+                                            "name": "tertiary",
+                                            "c": Theme.tertiary
+                                        }, {
+                                            "name": "green",
+                                            "c": Theme.green
+                                        }, {
+                                            "name": "yellow",
+                                            "c": Theme.yellow
+                                        }, {
+                                            "name": "red",
+                                            "c": Theme.red
+                                        }]
 
                                         ColumnLayout {
                                             spacing: 6
+
                                             Rectangle {
                                                 Layout.preferredWidth: 150
                                                 Layout.preferredHeight: 48
@@ -268,22 +400,42 @@ Rectangle {
                                                 border.width: 1
                                                 border.color: Qt.rgba(1, 1, 1, 0.08)
                                             }
-                                            Text { text: modelData.name; color: Theme.text; font.family: Fonts.sans; font.pixelSize: 12; font.weight: Font.DemiBold }
+
+                                            Text {
+                                                text: modelData.name
+                                                color: Theme.text
+                                                font.family: Fonts.sans
+                                                font.pixelSize: 12
+                                                font.weight: Font.DemiBold
+                                            }
+
                                             Text {
                                                 text: {
-                                                    const c = modelData.c
-                                                    const hex = v => Math.round(v * 255).toString(16).padStart(2, "0")
-                                                    return "#" + hex(c.r) + hex(c.g) + hex(c.b)
+                                                    const c = modelData.c;
+                                                    const hex = function hex(v) {
+                                                        return Math.round(v * 255).toString(16).padStart(2, "0");
+                                                    };
+                                                    return "#" + hex(c.r) + hex(c.g) + hex(c.b);
                                                 }
                                                 color: Theme.muted
                                                 font.family: Fonts.sans
                                                 font.pixelSize: 11
                                             }
+
                                         }
+
                                     }
+
                                 }
 
-                                Text { text: "BEHAVIOR"; color: Theme.muted; font.family: Fonts.sans; font.pixelSize: 11; font.weight: Font.Bold; Layout.topMargin: 8 }
+                                Text {
+                                    text: "BEHAVIOR"
+                                    color: Theme.muted
+                                    font.family: Fonts.sans
+                                    font.pixelSize: 11
+                                    font.weight: Font.Bold
+                                    Layout.topMargin: 8
+                                }
 
                                 Rectangle {
                                     Layout.fillWidth: true
@@ -301,7 +453,15 @@ Rectangle {
                                         ColumnLayout {
                                             Layout.fillWidth: true
                                             spacing: 2
-                                            Text { text: "Hyprland animations"; color: Theme.text; font.family: Fonts.sans; font.pixelSize: 14; font.weight: Font.DemiBold }
+
+                                            Text {
+                                                text: "Hyprland animations"
+                                                color: Theme.text
+                                                font.family: Fonts.sans
+                                                font.pixelSize: 14
+                                                font.weight: Font.DemiBold
+                                            }
+
                                             Text {
                                                 text: "Live toggle via hyprctl — resets on restart, doesn't touch your config file."
                                                 color: Theme.muted
@@ -310,48 +470,92 @@ Rectangle {
                                                 wrapMode: Text.WordWrap
                                                 Layout.fillWidth: true
                                             }
+
                                         }
 
                                         // M3-style switch: pill track + border, thumb grows when on
                                         Rectangle {
                                             id: animSwitch
+
                                             property bool on: true
+
                                             Layout.preferredWidth: 46
                                             Layout.preferredHeight: 26
                                             radius: 13
                                             color: on ? Theme.primary : "transparent"
                                             border.width: 2
                                             border.color: on ? Theme.primary : Theme.muted
-                                            Behavior on color { ColorAnimation { duration: 180 } }
-                                            Behavior on border.color { ColorAnimation { duration: 180 } }
 
                                             Rectangle {
                                                 id: switchThumb
+
                                                 width: animSwitch.on ? 18 : 14
                                                 height: width
                                                 radius: width / 2
                                                 anchors.verticalCenter: parent.verticalCenter
                                                 x: animSwitch.on ? animSwitch.width - width - 4 : 4
                                                 color: animSwitch.on ? Theme.mantle : Theme.muted
-                                                Behavior on x { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
-                                                Behavior on width { NumberAnimation { duration: 140; easing.type: Easing.OutCubic } }
-                                                Behavior on color { ColorAnimation { duration: 180 } }
+
+                                                Behavior on x {
+                                                    NumberAnimation {
+                                                        duration: 180
+                                                        easing.type: Easing.OutCubic
+                                                    }
+
+                                                }
+
+                                                Behavior on width {
+                                                    NumberAnimation {
+                                                        duration: 140
+                                                        easing.type: Easing.OutCubic
+                                                    }
+
+                                                }
+
+                                                Behavior on color {
+                                                    ColorAnimation {
+                                                        duration: 180
+                                                    }
+
+                                                }
+
                                             }
 
                                             MouseArea {
                                                 anchors.fill: parent
                                                 cursorShape: Qt.PointingHandCursor
                                                 onClicked: {
-                                                    animSwitch.on = !animSwitch.on
-                                                    Quickshell.execDetached(["hyprctl", "keyword", "animations:enabled", animSwitch.on ? "1" : "0"])
+                                                    animSwitch.on = !animSwitch.on;
+                                                    Quickshell.execDetached(["hyprctl", "keyword", "animations:enabled", animSwitch.on ? "1" : "0"]);
                                                 }
                                             }
+
+                                            Behavior on color {
+                                                ColorAnimation {
+                                                    duration: 180
+                                                }
+
+                                            }
+
+                                            Behavior on border.color {
+                                                ColorAnimation {
+                                                    duration: 180
+                                                }
+
+                                            }
+
                                         }
+
                                     }
+
                                 }
 
-                                Item { Layout.fillHeight: true }
+                                Item {
+                                    Layout.fillHeight: true
+                                }
+
                             }
+
                         }
 
                         // ---- Wallpaper ----
@@ -365,6 +569,7 @@ Rectangle {
 
                                 RowLayout {
                                     Layout.fillWidth: true
+
                                     Text {
                                         text: "From ~/Pictures/Wallpapers — click one to set it and re-theme the whole rice with matugen."
                                         color: Theme.muted
@@ -373,11 +578,19 @@ Rectangle {
                                         wrapMode: Text.WordWrap
                                         Layout.fillWidth: true
                                     }
-                                    Text { text: wallpaperModel.count + " found"; color: Theme.muted; font.family: Fonts.sans; font.pixelSize: 12 }
+
+                                    Text {
+                                        text: wallpaperModel.count + " found"
+                                        color: Theme.muted
+                                        font.family: Fonts.sans
+                                        font.pixelSize: 12
+                                    }
+
                                 }
 
                                 GridView {
                                     id: wallGrid
+
                                     Layout.fillWidth: true
                                     Layout.fillHeight: true
                                     cellWidth: 172
@@ -387,6 +600,7 @@ Rectangle {
 
                                     model: ScriptModel {
                                         id: wallpaperModel
+
                                         values: wallpaperListProc.paths
                                     }
 
@@ -403,7 +617,6 @@ Rectangle {
                                             border.width: wallMouse.containsMouse ? 2 : 0
                                             border.color: Theme.primary
                                             scale: wallMouse.pressed ? 0.95 : (wallMouse.containsMouse ? 1.04 : 1)
-                                            Behavior on scale { NumberAnimation { duration: 160; easing.type: Easing.OutBack } }
 
                                             Image {
                                                 anchors.fill: parent
@@ -414,17 +627,25 @@ Rectangle {
 
                                             MouseArea {
                                                 id: wallMouse
+
                                                 anchors.fill: parent
                                                 hoverEnabled: true
                                                 cursorShape: Qt.PointingHandCursor
-                                                onClicked: Quickshell.execDetached([
-                                                    "bash", "-c",
-                                                    "exec \"$HOME/.config/hypr/scripts/wallpaper.sh\" \"$1\"",
-                                                    "wallpaper.sh", modelData
-                                                ])
+                                                onClicked: Quickshell.execDetached(["bash", "-c", "exec \"$HOME/.config/hypr/scripts/wallpaper.sh\" \"$1\"", "wallpaper.sh", modelData])
                                             }
+
+                                            Behavior on scale {
+                                                NumberAnimation {
+                                                    duration: 160
+                                                    easing.type: Easing.OutBack
+                                                }
+
+                                            }
+
                                         }
+
                                     }
+
                                 }
 
                                 Text {
@@ -436,20 +657,32 @@ Rectangle {
                                     Layout.alignment: Qt.AlignHCenter
                                     Layout.topMargin: 40
                                 }
+
                             }
 
                             Process {
                                 id: wallpaperListProc
+
                                 property var paths: []
+
                                 running: root.currentPage === "wallpaper" && root.win.visible
-                                onRunningChanged: if (running) paths = []
+                                onRunningChanged: function() {
+                                    if (running)
+                                        paths = [];
+
+                                }
                                 command: ["bash", "-c", "find \"$HOME/Pictures/Wallpapers\" -maxdepth 1 -type f \\( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' \\) 2>/dev/null | sort"]
+
                                 stdout: SplitParser {
-                                    onRead: data => {
-                                        if (data.trim().length > 0) wallpaperListProc.paths = [...wallpaperListProc.paths, data.trim()]
+                                    onRead: function(data) {
+                                        if (data.trim().length > 0)
+                                            wallpaperListProc.paths = wallpaperListProc.paths.concat([data.trim()]);
+
                                     }
                                 }
+
                             }
+
                         }
 
                         // ---- Keybinds ----
@@ -465,61 +698,135 @@ Rectangle {
 
                                 ColumnLayout {
                                     id: keybindsFlow
+
                                     width: parent.width
                                     spacing: 18
 
                                     Repeater {
-                                        model: [
-                                            { section: "Apps & windows", items: [
-                                                { keys: ["Super", "Return"], desc: "Open terminal" },
-                                                { keys: ["Super", "E"], desc: "Open file manager" },
-                                                { keys: ["Super", "Space"], desc: "Toggle app launcher" },
-                                                { keys: ["Super", "I"], desc: "Open this settings panel" },
-                                                { keys: ["Super", "Q"], desc: "Close focused window" },
-                                                { keys: ["Super", "Shift", "Q"], desc: "Exit Hyprland" },
-                                                { keys: ["Super", "Shift", "V"], desc: "Toggle floating" },
-                                                { keys: ["Super", "P"], desc: "Toggle pseudotile" },
-                                                { keys: ["Super", "J"], desc: "Toggle split direction" },
-                                                { keys: ["Super", "F"], desc: "Toggle fullscreen" },
-                                                { keys: ["Super", "L"], desc: "Lock screen" }
-                                            ] },
-                                            { section: "Workspaces & focus", items: [
-                                                { keys: ["Super", "\u2190/\u2192/\u2191/\u2193"], desc: "Focus window in direction" },
-                                                { keys: ["Super", "1-0"], desc: "Switch to workspace" },
-                                                { keys: ["Super", "Shift", "1-0"], desc: "Move window to workspace" },
-                                                { keys: ["Super", "S"], desc: "Toggle special workspace" },
-                                                { keys: ["Super", "Ctrl", "S"], desc: "Move window to special workspace" },
-                                                { keys: ["Super", "Tab"], desc: "Toggle workspace overview" }
-                                            ] },
-                                            { section: "Bar & menus", items: [
-                                                { keys: ["Super", "V"], desc: "Clipboard history" },
-                                                { keys: ["Super", "N"], desc: "Notification center" }
-                                            ] },
-                                            { section: "Screenshots & media", items: [
-                                                { keys: ["Print"], desc: "Screenshot (area)" },
-                                                { keys: ["Super", "Print"], desc: "Screenshot (full)" },
-                                                { keys: ["Super", "Shift", "S"], desc: "Screenshot (area)" },
-                                                { keys: ["Super", "Shift", "R"], desc: "Screen recording" },
-                                                { keys: ["Super", "Shift", "C"], desc: "Color picker" },
-                                                { keys: ["Super", "W"], desc: "Random wallpaper + re-theme" },
-                                                { keys: ["Super", "G"], desc: "Toggle gamemode" }
-                                            ] },
-                                            { section: "Media keys", items: [
-                                                { keys: ["Vol +/-"], desc: "Adjust volume" },
-                                                { keys: ["Mute"], desc: "Mute audio" },
-                                                { keys: ["Bright +/-"], desc: "Adjust screen brightness" }
-                                            ] },
-                                            { section: "Mouse", items: [
-                                                { keys: ["Super", "L-drag"], desc: "Move window" },
-                                                { keys: ["Super", "R-drag"], desc: "Resize window" }
-                                            ] }
-                                        ]
+                                        model: [{
+                                            "section": "Apps & windows",
+                                            "items": [{
+                                                "keys": ["Super", "Return"],
+                                                "desc": "Open terminal"
+                                            }, {
+                                                "keys": ["Super", "E"],
+                                                "desc": "Open file manager"
+                                            }, {
+                                                "keys": ["Super", "Space"],
+                                                "desc": "Toggle app launcher"
+                                            }, {
+                                                "keys": ["Super", "I"],
+                                                "desc": "Open this settings panel"
+                                            }, {
+                                                "keys": ["Super", "Q"],
+                                                "desc": "Close focused window"
+                                            }, {
+                                                "keys": ["Super", "Shift", "Q"],
+                                                "desc": "Exit Hyprland"
+                                            }, {
+                                                "keys": ["Super", "Shift", "V"],
+                                                "desc": "Toggle floating"
+                                            }, {
+                                                "keys": ["Super", "P"],
+                                                "desc": "Toggle pseudotile"
+                                            }, {
+                                                "keys": ["Super", "J"],
+                                                "desc": "Toggle split direction"
+                                            }, {
+                                                "keys": ["Super", "F"],
+                                                "desc": "Toggle fullscreen"
+                                            }, {
+                                                "keys": ["Super", "L"],
+                                                "desc": "Lock screen"
+                                            }]
+                                        }, {
+                                            "section": "Workspaces & focus",
+                                            "items": [{
+                                                "keys": ["Super", "\u2190/\u2192/\u2191/\u2193"],
+                                                "desc": "Focus window in direction"
+                                            }, {
+                                                "keys": ["Super", "1-0"],
+                                                "desc": "Switch to workspace"
+                                            }, {
+                                                "keys": ["Super", "Shift", "1-0"],
+                                                "desc": "Move window to workspace"
+                                            }, {
+                                                "keys": ["Super", "S"],
+                                                "desc": "Toggle special workspace"
+                                            }, {
+                                                "keys": ["Super", "Ctrl", "S"],
+                                                "desc": "Move window to special workspace"
+                                            }, {
+                                                "keys": ["Super", "Tab"],
+                                                "desc": "Toggle workspace overview"
+                                            }]
+                                        }, {
+                                            "section": "Bar & menus",
+                                            "items": [{
+                                                "keys": ["Super", "V"],
+                                                "desc": "Clipboard history"
+                                            }, {
+                                                "keys": ["Super", "N"],
+                                                "desc": "Notification center"
+                                            }]
+                                        }, {
+                                            "section": "Screenshots & media",
+                                            "items": [{
+                                                "keys": ["Print"],
+                                                "desc": "Screenshot (area)"
+                                            }, {
+                                                "keys": ["Super", "Print"],
+                                                "desc": "Screenshot (full)"
+                                            }, {
+                                                "keys": ["Super", "Shift", "S"],
+                                                "desc": "Screenshot (area)"
+                                            }, {
+                                                "keys": ["Super", "Shift", "R"],
+                                                "desc": "Screen recording"
+                                            }, {
+                                                "keys": ["Super", "Shift", "C"],
+                                                "desc": "Color picker"
+                                            }, {
+                                                "keys": ["Super", "W"],
+                                                "desc": "Random wallpaper + re-theme"
+                                            }, {
+                                                "keys": ["Super", "G"],
+                                                "desc": "Toggle gamemode"
+                                            }]
+                                        }, {
+                                            "section": "Media keys",
+                                            "items": [{
+                                                "keys": ["Vol +/-"],
+                                                "desc": "Adjust volume"
+                                            }, {
+                                                "keys": ["Mute"],
+                                                "desc": "Mute audio"
+                                            }, {
+                                                "keys": ["Bright +/-"],
+                                                "desc": "Adjust screen brightness"
+                                            }]
+                                        }, {
+                                            "section": "Mouse",
+                                            "items": [{
+                                                "keys": ["Super", "L-drag"],
+                                                "desc": "Move window"
+                                            }, {
+                                                "keys": ["Super", "R-drag"],
+                                                "desc": "Resize window"
+                                            }]
+                                        }]
 
                                         ColumnLayout {
                                             Layout.fillWidth: true
                                             spacing: 8
 
-                                            Text { text: modelData.section; color: Theme.primary; font.family: Fonts.sans; font.pixelSize: 12; font.weight: Font.Bold }
+                                            Text {
+                                                text: modelData.section
+                                                color: Theme.primary
+                                                font.family: Fonts.sans
+                                                font.pixelSize: 12
+                                                font.weight: Font.Bold
+                                            }
 
                                             Repeater {
                                                 model: modelData.items
@@ -537,13 +844,12 @@ Rectangle {
                                                             model: modelData.keys
 
                                                             // === 3D keycap widget ===
-                                                            // Outer rect = keycap rim/border, inner "face" rect is
-                                                            // inset more on the bottom than the other sides, which
-                                                            // reads as a subtle drop-shadow / pressed-key depth.
                                                             Rectangle {
                                                                 id: keyCap
+
                                                                 readonly property real bw: 1
                                                                 readonly property real extraBottom: 2
+
                                                                 implicitWidth: keyFace.implicitWidth + bw * 2
                                                                 implicitHeight: keyFace.implicitHeight + bw * 2 + extraBottom
                                                                 radius: 7
@@ -551,6 +857,12 @@ Rectangle {
 
                                                                 Rectangle {
                                                                     id: keyFace
+
+                                                                    implicitWidth: keyLabel.implicitWidth + 14
+                                                                    implicitHeight: keyLabel.implicitHeight + 6
+                                                                    radius: 6
+                                                                    color: Qt.rgba(Theme.surfaceHigh.r, Theme.surfaceHigh.g, Theme.surfaceHigh.b, 0.95)
+
                                                                     anchors {
                                                                         fill: parent
                                                                         topMargin: keyCap.bw
@@ -558,13 +870,10 @@ Rectangle {
                                                                         rightMargin: keyCap.bw
                                                                         bottomMargin: keyCap.bw + keyCap.extraBottom
                                                                     }
-                                                                    implicitWidth: keyLabel.implicitWidth + 14
-                                                                    implicitHeight: keyLabel.implicitHeight + 6
-                                                                    radius: 6
-                                                                    color: Qt.rgba(Theme.surfaceHigh.r, Theme.surfaceHigh.g, Theme.surfaceHigh.b, 0.95)
 
                                                                     Text {
                                                                         id: keyLabel
+
                                                                         anchors.centerIn: parent
                                                                         text: modelData
                                                                         color: Theme.text
@@ -572,9 +881,13 @@ Rectangle {
                                                                         font.pixelSize: 11
                                                                         font.weight: Font.DemiBold
                                                                     }
+
                                                                 }
+
                                                             }
+
                                                         }
+
                                                     }
 
                                                     Text {
@@ -584,12 +897,19 @@ Rectangle {
                                                         font.pixelSize: 12
                                                         Layout.fillWidth: true
                                                     }
+
                                                 }
+
                                             }
+
                                         }
+
                                     }
+
                                 }
+
                             }
+
                         }
 
                         // ---- Monitors ----
@@ -635,6 +955,7 @@ Rectangle {
                                                     Layout.preferredHeight: 48
                                                     radius: 12
                                                     color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.14)
+
                                                     Text {
                                                         anchors.centerIn: parent
                                                         text: "\ue30a" // desktop_windows
@@ -642,28 +963,44 @@ Rectangle {
                                                         font.family: Fonts.icon
                                                         font.pixelSize: 22
                                                     }
+
                                                 }
 
                                                 ColumnLayout {
                                                     Layout.fillWidth: true
                                                     spacing: 2
-                                                    Text { text: modelData.name; color: Theme.text; font.family: Fonts.sans; font.pixelSize: 15; font.weight: Font.DemiBold }
+
                                                     Text {
-                                                        text: modelData.width + "\u00d7" + modelData.height
-                                                            + " \u00b7 scale " + (modelData.devicePixelRatio || 1).toFixed(2)
-                                                            + " \u00b7 position " + modelData.x + "," + modelData.y
+                                                        text: modelData.name
+                                                        color: Theme.text
+                                                        font.family: Fonts.sans
+                                                        font.pixelSize: 15
+                                                        font.weight: Font.DemiBold
+                                                    }
+
+                                                    Text {
+                                                        text: modelData.width + "\u00d7" + modelData.height + " \u00b7 scale " + (modelData.devicePixelRatio || 1).toFixed(2) + " \u00b7 position " + modelData.x + "," + modelData.y
                                                         color: Theme.muted
                                                         font.family: Fonts.sans
                                                         font.pixelSize: 12
                                                     }
+
                                                 }
+
                                             }
+
                                         }
+
                                     }
+
                                 }
 
-                                Item { Layout.fillHeight: true }
+                                Item {
+                                    Layout.fillHeight: true
+                                }
+
                             }
+
                         }
 
                         // ---- About ----
@@ -683,14 +1020,54 @@ Rectangle {
                                     wrapMode: Text.WordWrap
                                     Layout.fillWidth: true
                                 }
-                                Text { text: "github.com/u61d/hypr-rice"; color: Theme.secondary; font.family: Fonts.sans; font.pixelSize: 13 }
 
-                                Item { Layout.fillHeight: true }
+                                Text {
+                                    text: "github.com/u61d/hypr-rice"
+                                    color: Theme.secondary
+                                    font.family: Fonts.sans
+                                    font.pixelSize: 13
+                                }
+
+                                Item {
+                                    Layout.fillHeight: true
+                                }
+
                             }
+
                         }
+
                     }
+
                 }
+
             }
+
         }
+
+        Behavior on scale {
+            NumberAnimation {
+                duration: 380
+                easing.type: Easing.OutBack
+                easing.overshoot: 1.3
+            }
+
+        }
+
+        Behavior on opacity {
+            NumberAnimation {
+                duration: 200
+            }
+
+        }
+
     }
+
+    Behavior on opacity {
+        NumberAnimation {
+            duration: 200
+            easing.type: Easing.OutCubic
+        }
+
+    }
+
 }
