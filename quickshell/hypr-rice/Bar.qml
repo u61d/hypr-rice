@@ -125,13 +125,13 @@ Item {
                 StatusModule {
                     icon: ""
                     accent: Theme.green
-                    command: "top -bn1 | awk '/Cpu/ {print int($2+$4)\"%\"}'" 
+                    command: "LC_ALL=C top -bn1 | awk '/Cpu/ {print int($2+$4)\"%\"}'" 
                     interval: 2500
                 }
                 StatusModule {
                     icon: ""
                     accent: Theme.yellow
-                    command: "free | awk '/Mem:/ {printf \"%d%%\", $3/$2*100}'"
+                    command: "LC_ALL=C free | awk '/Mem:/ {printf \"%d%%\", $3/$2*100}'"
                     interval: 5000
                 }
                 StatusModule {
@@ -154,5 +154,22 @@ Item {
                 }
             }
         }
+    }
+
+    // Popups anchored to their trigger icons above. These live outside the
+    // RowLayout because PopupWindow is a window, not a layoutable Item.
+    NetworkMenu {
+        anchorWindow: root.panelWindow
+        triggerItem: wifiIcon
+    }
+
+    BluetoothMenu {
+        anchorWindow: root.panelWindow
+        triggerItem: btIcon
+    }
+
+    BrightnessMenu {
+        anchorWindow: root.panelWindow
+        triggerItem: brightnessIcon
     }
 }

@@ -204,21 +204,6 @@ ShellRoot {
         CalendarPopup { modelData: modelData }
     }
 
-    Variants {
-        model: Quickshell.screens
-        NetworkMenu { modelData: modelData }
-    }
-
-    Variants {
-        model: Quickshell.screens
-        BluetoothMenu { modelData: modelData }
-    }
-
-    Variants {
-        model: Quickshell.screens
-        BrightnessMenu { modelData: modelData }
-    }
-
     IpcHandler {
         target: "hypr-rice"
         function reloadTheme() {
