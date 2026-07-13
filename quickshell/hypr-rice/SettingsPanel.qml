@@ -89,20 +89,20 @@ Rectangle {
 
             // === Sidebar ===
             ColumnLayout {
-                Layout.preferredWidth: 216
+                Layout.preferredWidth: 72
+                Layout.maximumWidth: 72
                 Layout.fillHeight: true
                 spacing: 0
 
                 RowLayout {
-                    Layout.leftMargin: 14
-                    Layout.topMargin: 6
-                    Layout.bottomMargin: 14
-                    spacing: 8
+                    Layout.alignment: Qt.AlignHCenter
+                    Layout.topMargin: 16
+                    Layout.bottomMargin: 24
 
                     Rectangle {
-                        Layout.preferredWidth: 30
-                        Layout.preferredHeight: 30
-                        radius: 11
+                        Layout.preferredWidth: 38
+                        Layout.preferredHeight: 38
+                        radius: 12
                         color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.18)
 
                         // settings gear
@@ -111,23 +111,14 @@ Rectangle {
                             text: "\ue8b8"
                             color: Theme.primary
                             font.family: Fonts.icon
-                            font.pixelSize: 17
+                            font.pixelSize: 20
                         }
 
-                    }
-
-                    Text {
-                        text: "Settings"
-                        color: Theme.text
-                        font.family: Fonts.sans
-                        font.pixelSize: 16
-                        font.weight: Font.Bold
                     }
 
                 }
 
                 // Sidebar nav with a shared highlight that glides between items
-                // instead of each row flashing its own background independently.
                 Item {
                     id: navWrap
 
@@ -173,8 +164,9 @@ Rectangle {
                     ColumnLayout {
                         id: navList
 
-                        width: parent.width
-                        spacing: 2
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        spacing: 8
 
                         Repeater {
                             id: navRepeater
@@ -186,49 +178,18 @@ Rectangle {
 
                                 readonly property bool active: root.currentPage === modelData.id
 
-                                Layout.fillWidth: true
-                                Layout.leftMargin: 10
-                                Layout.rightMargin: 10
-                                Layout.preferredHeight: 46
+                                Layout.preferredWidth: 48
+                                Layout.preferredHeight: 48
+                                Layout.alignment: Qt.AlignHCenter
                                 radius: 14
                                 color: (navMouse.containsMouse && !active) ? Qt.rgba(Theme.surfaceHigh.r, Theme.surfaceHigh.g, Theme.surfaceHigh.b, 0.35) : "transparent"
 
-                                RowLayout {
-                                    anchors.fill: parent
-                                    anchors.leftMargin: 10
-                                    spacing: 10
-
-                                    Rectangle {
-                                        Layout.preferredWidth: 32
-                                        Layout.preferredHeight: 32
-                                        radius: 11
-                                        color: navItem.active ? Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.22) : "transparent"
-
-                                        Text {
-                                            anchors.centerIn: parent
-                                            text: modelData.icon
-                                            color: navItem.active ? Theme.primary : Theme.muted
-                                            font.family: Fonts.icon
-                                            font.pixelSize: 17
-                                        }
-
-                                        Behavior on color {
-                                            ColorAnimation {
-                                                duration: 200
-                                            }
-
-                                        }
-
-                                    }
-
-                                    Text {
-                                        text: modelData.label
-                                        color: navItem.active ? Theme.text : Theme.muted
-                                        font.family: Fonts.sans
-                                        font.pixelSize: 14
-                                        font.weight: navItem.active ? Font.DemiBold : Font.Medium
-                                    }
-
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: modelData.icon
+                                    color: navItem.active ? Theme.primary : Theme.muted
+                                    font.family: Fonts.icon
+                                    font.pixelSize: 22
                                 }
 
                                 MouseArea {
